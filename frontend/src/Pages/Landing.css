@@ -1,0 +1,27 @@
+.head{
+    box-sizing: border-box;
+    background-color: #0d0d0d;
+    margin: 0;
+    padding: 0;
+}
+
+body, html {
+    height: 100%;
+}
+
+.head {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; 
+}
+.highlight{
+    color: blueviolet;
+}
+
+.heading {
+    color: white;
+    font-size: 4rem; 
+    text-align: center;
+    margin: 0;
+}
