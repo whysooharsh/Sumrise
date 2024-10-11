@@ -1,19 +1,21 @@
-import Landing from "./Pages/Landing";
-import Homepage from "./Pages/Homepage";
-
-import { BrowserRouter, Route,Routes } from "react-router-dom";
 import './App.css';
+import Post from "./Post";
+import Header from "./Header";
+import {Route, Routes} from "react-router-dom";
+import IndexPage from './Pages/IndexPage';
+import LoginPage from './Pages/LoginPage';
+import Layout from "./Layout";
 
-const App=()=>{
+function App() {
   return (
-    <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Landing/>} />
-          <Route path="/Homepage" element={<Homepage/>}/>
-        </Routes>
-    </BrowserRouter>
-  )
+      <Routes>
+        <Route path="/" element={<Layout />}>
+        <Route index element = {<IndexPage />} />
+          <Route path = {'/login'} element = {<LoginPage/>}/>
 
-
+        </Route>
+      </Routes>
+  );
 }
-export default App
+
+export default App;
