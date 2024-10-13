@@ -1,21 +1,21 @@
 import { Form } from "react-router-dom";
 import './LoginPage.css'
 
-export default function LoginPage(){
+export default function RegisterPage(){
     return (
         <div className="container">
         <div className = "heading">
-           <h4>Sign in with email</h4>
+           <h4>Register</h4>
         </div>
 
         <div className="para">
-            Enter the email and password associated with your account
+        Enter your email address to create an account.
         </div>
         <div className="input">
-        <form action = "">
+        <form>
            <input type="text" placeholder="Username" class="input-field"/>
            <input type="password" placeholder="Password" class="input-field"/>
-           <button>Login</button>
+           <button>Continue</button>
 
         </form>
         </div>
