@@ -42,6 +42,24 @@ module.exports = {
             res.status(400).json(e);
         }
     },
+    profile: (req, res) => {
+        try {
+            const { token } = req.cookies;
+            if (!token) return res.status(401).json({ message: "NOT LOGIN" });
+    
+            jwt.verify(token, secret, {}, (err, info) => {
+                if (err) {
+                    console.error("Token Verification Error:", err);
+                    return res.status(401).json({ message: "Invalid token" });
+                }
+                res.json(info);
+            });
+        } catch (err) {
+            console.error("Profile Error:", err);
+            res.status(500).json({ message: "Error checking profile" });
+        }
+    },
+    
 
     refreshToken: async (req, res) => {
         const {token} = req.cookies;

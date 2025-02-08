@@ -7,5 +7,7 @@ const authController = require('../Controllers/authController'); // added contro
 router.post('/login', authController.login);
 router.post('/register', authController.register);
 router.post('/refresh-token', authController.refreshToken);
+router.get("/profile", authController.profile);
+router.post("/logout", authController.logout); 
 
 module.exports = router;

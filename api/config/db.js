@@ -19,6 +19,5 @@ const connectDB = async () => {
   }
 };
 
-// TODO: Add any additional database setup if required
 
 module.exports = connectDB;
