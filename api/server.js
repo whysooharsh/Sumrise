@@ -2,10 +2,11 @@ require('dotenv').config();
 const express = require("express");
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-const connectDB = require('./config/db');
+const mongoose = require('mongoose');
 const path = require('path');
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
@@ -24,7 +25,18 @@ app.use((err, req, res, next) => {
 });
 
 // Connect to database
-connectDB();
+if (!process.env.MONGO_URI) {
+  console.error('MONGO_URI is not defined in the environment variables');
+  process.exit(1);
+}
+
+mongoose.connect(process.env.MONGO_URI, {
+  // Removed deprecated options
+}).then(() => {
+  console.log('Connected to MongoDB');
+}).catch((err) => {
+  console.error('Error connecting to MongoDB:', err);
+});
 
 // Routes
 app.use("/api/auth", require('./Routes/authRoute'));
@@ -39,8 +51,6 @@ app.use((err, req, res, next) => {
         message: process.env.NODE_ENV === 'development' ? err.message : 'Internal Server Error'
     });
 });
-
-const PORT = process.env.PORT || 3000;
 
 async function main(){
     try {
