@@ -4,10 +4,8 @@ import {useEffect, useState} from "react";
 export default function IndexPage() {
   const [posts,setPosts] = useState([]);
   useEffect(() => {
-    fetch('http://localhost:5000/post').then(response => {
-      response.json().then(posts => {
-        setPosts(posts);
-      });
+    axios.get('http://localhost:3000/post').then(response => {
+      setPosts(response.data);
     });
   }, []);
   return (

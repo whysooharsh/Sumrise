@@ -1,14 +1,14 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
 
-if (!process.env.MONGODB_URI) {
-  console.error("Error: MONGODB_URI is not defined in the environment variables.");
+if (!process.env.MONGO_URI) {
+  console.error("Error: MONGO_URI is not defined in the environment variables.");
   process.exit(1);
 }
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URI, {
+    await mongoose.connect(process.env.MONGO_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });

@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import {Navigate, useParams} from "react-router-dom";
 import Editor from "../Editor";
+import axios from 'axios';
 
 export default function EditPost() {
   const {id} = useParams();
@@ -11,15 +12,14 @@ export default function EditPost() {
   const [redirect,setRedirect] = useState(false);
 
   useEffect(() => {
-    fetch('http://localhost:5000/post/'+id)
+    axios.get('http://localhost:3000/post/'+id)
       .then(response => {
-        response.json().then(postInfo => {
-          setTitle(postInfo.title);
-          setContent(postInfo.content);
-          setSummary(postInfo.summary);
-        });
+        const postInfo = response.data;
+        setTitle(postInfo.title);
+        setContent(postInfo.content);
+        setSummary(postInfo.summary);
       });
-  }, [id]);
+  }, []);
 
   async function updatePost(ev) {
     ev.preventDefault();
@@ -31,13 +31,16 @@ export default function EditPost() {
     if (files?.[0]) {
       data.set('file', files?.[0]);
     }
-    const response = await fetch('http://localhost:5000/post', {
-      method: 'PUT',
-      body: data,
-      credentials: 'include',
-    });
-    if (response.ok) {
+    try {
+      const response = await axios.put('http://localhost:3000/post',
+        data,
+        {
+          withCredentials: true,
+        }
+      );
       setRedirect(true);
+    } catch (error) {
+      console.error('Error updating post:', error);
     }
   }
 

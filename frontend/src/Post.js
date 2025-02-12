@@ -1,5 +1,6 @@
 import {formatISO9075} from "date-fns";
 import {Link, useHistory} from "react-router-dom";
+import { getPostById } from './api';
 
 export default function Post({_id,title,summary,cover,content,createdAt,author}) {
   const history = useHistory();

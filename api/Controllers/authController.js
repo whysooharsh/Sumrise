@@ -7,15 +7,18 @@ const salt = bcrypt.genSaltSync(10);
 
 module.exports = {
     login: async (req, res) => {
-        const {username, password} = req.body;
+        const { Username, Password } = req.body;
+        const username = Username.toLowerCase();
+        const password = Password.toLowerCase();
+
         try {
-            const userDoc = await User.findOne({username});
+            const userDoc = await User.findOne({ username });
             if (!userDoc) {
                 return res.status(400).json('User not found');
             }
             const passOk = bcrypt.compareSync(password, userDoc.password);
             if (passOk) {
-                jwt.sign({username, id: userDoc._id}, secret, {}, (err, token) => {
+                jwt.sign({ username, id: userDoc._id }, secret, {}, (err, token) => {
                     if (err) throw err;
                     res.cookie('token', token).json({
                         id: userDoc._id,
@@ -31,7 +34,10 @@ module.exports = {
     },
 
     register: async (req, res) => {
-        const {username, password} = req.body;
+        const { Username, Password } = req.body;
+        const username = Username.toLowerCase();
+        const password = Password.toLowerCase();
+
         try {
             const userDoc = await User.create({
                 username,
