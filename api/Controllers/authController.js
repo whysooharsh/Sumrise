@@ -45,6 +45,7 @@ module.exports = {
     profile: (req, res) => {
         try {
             const { token } = req.cookies;
+            console.log("JWT Secret:", process.env.JWT_SECRET);
             if (!token) return res.status(401).json({ message: "NOT LOGIN" });
     
             jwt.verify(token, secret, {}, (err, info) => {

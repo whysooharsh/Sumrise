@@ -7,13 +7,13 @@ const path = require('path');
 
 const app = express();
 
-// Middleware
+
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Error handling middleware
+
 app.use((err, req, res, next) => {
     if(err instanceof SyntaxError){
         return res.status(400).json({
@@ -23,15 +23,14 @@ app.use((err, req, res, next) => {
     next();
 });
 
-// Connect to database
 connectDB();
 
-// Routes
+
 app.use("/api/auth", require('./Routes/authRoute'));
 app.use('/api/users', require('./Routes/userRoute'));
 app.use('/api/blogs', require('./Routes/blogRoute'));
 
-// Global error handler
+
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({
