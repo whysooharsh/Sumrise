@@ -1,22 +1,26 @@
-export default function Post(){
+import { Link } from "react-router-dom";
+import { formatISO9075 } from 'date-fns';
 
+export default function Post({ _id, cover, title, author, createdAt, summary }) {
     return (
         <div className="post">
-                <div className="image">
-                <img src='https://wallpapercave.com/wp/wp2691077.jpg' width={700}></img>
-                </div>
-                <div className="texts">
-                <h2>HotDog</h2>
-                <p className = "info">
-                    <a className='author'>Harsh Sharma</a>
-                    <time>2024-10-10 22:03</time>
+            <div className="image">
+                <Link to={`/post/${_id}`}>
+                    <img src={`https://localhost:5000/${cover}`} alt="" />
+                </Link>
+            </div>
+
+            <div className="text">
+                <Link to={`/post/${_id}`}>
+                    <h2>{title}</h2>
+                </Link>
+
+                <p className="detail">
+                    <a className="author">{author.username}</a>
+                    <time>{formatISO9075(new Date(createdAt))}</time>
                 </p>
-                <p className = 'summary'><h3>Hot Dogs: The Comedic King of the Grill</h3>
-                    Ah, the hot dog. The only food that can make you feel like a child and a gourmet chef at the same time.
-                    A Little History    
-            Rumor has it that hot dogs originated from German sausages, but honestly, they could have been invented by a hungry guy trying to impress his date. “Look, honey! I can put meat in a bun!”
-            </p>
+                <p className="summary">{summary}</p>
             </div>
-            </div>
-    )
+        </div>
+    );
 }

@@ -26,13 +26,13 @@ module.exports = {
         try {
             const { username, password, email } = req.body;
             
-            // Check if user already exists
+          
             const existingUser = await User.findOne({ $or: [{ username }, { email }] });
             if (existingUser) {
                 return res.status(400).json({ message: "Username or email already exists" });
             }
 
-            // Hash password
+            // Hash passowrd for encryptionn
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(password, salt);
 
