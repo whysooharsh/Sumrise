@@ -8,24 +8,34 @@ const salt = bcrypt.genSaltSync(10);
 module.exports = {
     login: async (req, res) => {
         const {username, password} = req.body;
+
+        if (!username || !password) {
+            console.log("Validation Error: Missing username or password"); // Debugging line
+            return res.status(400).json({ message: "Username and password are required." });
+        }
+
         try {
             const userDoc = await User.findOne({username});
             if (!userDoc) {
+                console.log("Validation Error: User not found"); // Debugging line
                 return res.status(400).json('User not found');
             }
             const passOk = bcrypt.compareSync(password, userDoc.password);
             if (passOk) {
                 jwt.sign({username, id: userDoc._id}, secret, {}, (err, token) => {
                     if (err) throw err;
+                    console.log("Login successful:", userDoc); // Debugging line
                     res.cookie('token', token).json({
                         id: userDoc._id,
                         username,
                     });
                 });
             } else {
+                console.log("Validation Error: Incorrect password"); // Debugging line
                 res.status(400).json('wrong credentials');
             }
         } catch (err) {
+            console.error("Server Error:", err); // Debugging line
             res.status(500).json('Internal server error');
         }
     },
@@ -46,6 +56,7 @@ module.exports = {
         try {
             const { token } = req.cookies;
             console.log("JWT Secret:", process.env.JWT_SECRET);
+
             if (!token) return res.status(401).json({ message: "NOT LOGIN" });
     
             jwt.verify(token, secret, {}, (err, info) => {

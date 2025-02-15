@@ -1,13 +1,14 @@
 import { useContext, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { UserContext } from "./UserContext";
 
-export default function Header(){
-    const {info, setInfo} = useContext(UserContext);
-
+export default function Header() {
+    const { info, setInfo } = useContext(UserContext);
+    const navigate = useNavigate();
+    
     useEffect(() => {
-        axios.get('http://localhost:5000/profile', {
+        axios.get('http://localhost:5000/api/auth/profile', {
             withCredentials: true,
         }).then(response => {
             setInfo(response.data);
@@ -16,15 +17,18 @@ export default function Header(){
         });
     }, []); 
 
-    function logout(){
-        axios.get('http://localhost:5000/logout',{
-            withCredentials:true,
-            method: 'POST',
+    function logout() {
+        axios.post('http://localhost:5000/api/auth/logout', {}, {
+            withCredentials: true,
+        }).then(() => {
+            setInfo(null);
+            navigate('/login'); 
+        }).catch(error => {
+            console.log('Error logging out:', error);
         });
-        setInfo(null);
     }
 
-        const username = setInfo?.username;
+    const username = info?.username;
 
     return (
         <header>
@@ -32,17 +36,23 @@ export default function Header(){
             <nav>
                 {username && (
                     <>
-                    <Link to="/create">Create New Post</Link>
-                    <a onClick={logout}>Logout ({username})</a>
+                        <Link to="/create">Create New Post</Link>
+                        <Link to="/edit-post">Edit Post</Link>
+                        <a onClick={logout} style={{ cursor: 'pointer' }}>Logout ({username})</a>
                     </>
                 )}
                 {!username && (
                     <>
-                    <Link to="/login">Login</Link>
-                    <Link to="/register">Register</Link>
+                        <Link to="/login">Login</Link>
+                        <Link to="/register">Register</Link>
                     </>
                 )}
             </nav>
+            {username && (
+                <button onClick={() => navigate('/create')} className="create-post-button">
+                    Create Post
+                </button>
+            )}
         </header>
     );
 }
