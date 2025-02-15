@@ -25,7 +25,11 @@ module.exports = {
                 jwt.sign({username, id: userDoc._id}, secret, {}, (err, token) => {
                     if (err) throw err;
                     console.log("Login successful:", userDoc); // Debugging line
-                    res.cookie('token', token).json({
+                    res.cookie('token', token, {
+                        httpOnly: true,    
+                        secure: false,     
+                        sameSite: 'Lax'   
+                    }).json({
                         id: userDoc._id,
                         username,
                     });
@@ -67,7 +71,7 @@ module.exports = {
                 res.json(info);
             });
         } catch (err) {
-            console.error("Profile Error:", err);
+            console.error("Profile Error:", err);   
             res.status(500).json({ message: "Error checking profile" });
         }
     },

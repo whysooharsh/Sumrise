@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const router = Router();
 
-const userController = require('../Controllers/userController'); // added controller import
+const userController = require('../Controllers/userController');
 
 router.get('/', userController.getAllUsers);
 router.get('/:id', userController.getUserById);

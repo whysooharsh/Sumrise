@@ -1,10 +1,11 @@
-import { useState, useContext, useEffect } from "react";
-import { useNavigate, useParams, Navigate } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate, Navigate } from "react-router-dom"; 
+import "react-quill/dist/quill.snow.css"
+
 import axios from "axios";
 import Editor from "../Editor";
 
 export default function CreatePost() {
-  const { id } = useParams();
   const [post, setPost] = useState({
     title: "",
     summary: "",
@@ -16,30 +17,7 @@ export default function CreatePost() {
     error: "",
     redirect: false,
   });
-
-  useEffect(() => {
-    const fetchPost = async () => {
-      setStatus((s) => ({ ...s, loading: true }));
-      try {
-        const response = await axios.get(`http://localhost:5000/post/${id}`);
-        setPost({
-          title: response.data.title,
-          summary: response.data.summary,
-          content: response.data.content,
-          file: null,
-        });
-        setStatus((s) => ({ ...s, loading: false }));
-      } catch (err) {
-        setStatus((s) => ({
-          ...s,
-          loading: false,
-          error: "Failed to fetch post details.",
-        }));
-      }
-    };
-
-    fetchPost();
-  }, [id]);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -49,7 +27,7 @@ export default function CreatePost() {
     }));
   };
 
-  const updatePost = async (e) => {
+  const createPost = async (e) => {
     e.preventDefault();
     setStatus((s) => ({ ...s, error: "", loading: true }));
 
@@ -57,36 +35,36 @@ export default function CreatePost() {
     formData.append("title", post.title);
     formData.append("summary", post.summary);
     formData.append("content", post.content);
-    formData.append("id", id);
     if (post.file) formData.append("file", post.file);
 
     try {
-      const response = await axios.put("http://localhost:5000/post", formData, {
+      const response = await axios.post("http://localhost:5000/api/blogs", formData, {
         withCredentials: true,
         headers: {
           "Content-Type": "multipart/form-data",
+          "Authorization": `Bearer ${document.cookie.split('=')[1]}` 
         },
       });
 
-      if (response.status === 200) {
+      if (response.status === 201) {
         setStatus((s) => ({ ...s, redirect: true }));
       }
     } catch (err) {
       setStatus((s) => ({
         ...s,
         loading: false,
-        error: err.response?.data?.message || "Failed to update post.",
+        error: err.response?.data?.message || "Failed to create post.",
       }));
     }
   };
 
   if (status.redirect) {
-    return <Navigate to={`/post/${id}`} />;
+    return <Navigate to="/" />;
   }
 
   return (
-    <form onSubmit={updatePost}>
-      <h2>Edit Post</h2>
+    <form onSubmit={createPost}>
+      <h2>Create Post</h2>
       {status.error && <div className="error">{status.error}</div>}
       {status.loading && <div className="loading">Loading...</div>}
 
@@ -113,7 +91,7 @@ export default function CreatePost() {
       />
       <Editor onChange={(value) => setPost({ ...post, content: value })} value={post.content} />
       <button type="submit" disabled={status.loading} style={{ marginTop: "5px" }}>
-        {status.loading ? "Updating..." : "Update Post"}
+        {status.loading ? "Creating..." : "Create Post"}
       </button>
     </form>
   );

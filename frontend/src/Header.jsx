@@ -15,7 +15,7 @@ export default function Header() {
         }).catch(error => {
             console.log('Error fetching profile:', error);
         });
-    }, []); 
+    }, [setInfo]); // Add setInfo as a dependency
 
     function logout() {
         axios.post('http://localhost:5000/api/auth/logout', {}, {
@@ -32,16 +32,14 @@ export default function Header() {
 
     return (
         <header>
-            <Link to="/" className="logo">Surmise</Link>
+            <Link to="/" className="logo">Sumrise</Link>
             <nav>
-                {username && (
+                {username ? (
                     <>
                         <Link to="/create">Create New Post</Link>
-                        <Link to="/edit-post">Edit Post</Link>
-                        <a onClick={logout} style={{ cursor: 'pointer' }}>Logout ({username})</a>
+                        <button onClick={logout} style={{ cursor: 'pointer' }}>Logout ({username})</button>
                     </>
-                )}
-                {!username && (
+                ) : (
                     <>
                         <Link to="/login">Login</Link>
                         <Link to="/register">Register</Link>

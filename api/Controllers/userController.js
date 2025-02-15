@@ -32,7 +32,6 @@ module.exports = {
                 return res.status(400).json({ message: "Username or email already exists" });
             }
 
-            // Hash passowrd for encryptionn
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(password, salt);
 

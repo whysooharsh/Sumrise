@@ -1,9 +1,8 @@
-// const multer = require('multer');
+const multer = require('multer');
 const fs = require('fs');
 const Post = require('../Models/Post');
 const jwt = require('jsonwebtoken');
-
-// const uploadMiddleware = multer({ dest: "uploads/" });
+const upload = multer({ dest: 'uploads/' });
 
 module.exports = {
     getAllPosts: async (req, res) => {
@@ -29,7 +28,7 @@ module.exports = {
 
     createPost: async (req, res) => {
         const { title, summary, content } = req.body;
-        const { token } = req.cookies;
+        const token = req.cookies.token || req.headers.authorization?.split(' ')[1]; // Ensure token is correctly parsed
         
         if (!token) return res.status(401).json({ message: "Not authenticated" });
 
@@ -52,7 +51,7 @@ module.exports = {
                     cover: newPath,
                     author: info.id,
                 });
-                res.json(postDoc);
+                res.status(201).json(postDoc); 
             } catch (error) {
                 res.status(500).json({ message: "Error creating post" });
             }
