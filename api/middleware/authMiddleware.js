@@ -6,11 +6,11 @@ module.exports = (req, res, next) => {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-    req.user = user;
+  try {
+    const { username, id } = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = { username, id };
     next();
-  });
+  } catch (err) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
 };

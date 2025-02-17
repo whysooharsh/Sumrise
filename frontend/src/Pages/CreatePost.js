@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Navigate } from "react-router-dom"; 
-import "react-quill/dist/quill.snow.css"
-
+import "react-quill/dist/quill.snow.css";
 import axios from "axios";
 import Editor from "../Editor";
 
@@ -38,11 +37,12 @@ export default function CreatePost() {
     if (post.file) formData.append("file", post.file);
 
     try {
+      const token = document.cookie.split('; ').find(row => row.startsWith('token=')).split('=')[1];
       const response = await axios.post("http://localhost:5000/api/blogs", formData, {
         withCredentials: true,
         headers: {
           "Content-Type": "multipart/form-data",
-          "Authorization": `Bearer ${document.cookie.split('=')[1]}` 
+          "Authorization": `Bearer ${token}` 
         },
       });
 

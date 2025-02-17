@@ -63,7 +63,7 @@ export default function CreatePost() {
         },
       });
 
-      // noobie to write logic, 4o helped
+      
 
       setStatus({ loading: false, success: "Post created successfully!" });
 

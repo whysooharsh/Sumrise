@@ -7,7 +7,12 @@ export default function IndexPage(){
     useEffect(() => {
         const fetchPosts = async() => {
             try{
-                const res = await axios.get('/posts');
+                const res = await axios.get('/posts', {
+                    withCredentials: true,
+                    headers: {
+                        "Authorization": `Bearer ${document.cookie.split('=')[1]}` 
+                    }
+                });
                 setPosts(res.data);
             }
             catch(error){
@@ -33,3 +38,4 @@ export default function IndexPage(){
        </div>
     );
 }
+

@@ -1,49 +1,47 @@
-import { useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useContext, useState } from "react";
+import { Navigate } from "react-router-dom";
+import { UserContext } from "../UserContext";
 import './LoginPage.css';
 
 export default function LoginPage() {
-  const [user, setUser] = useState({
-    username: "",
-    password: "",
-  });
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState(""); // Add success state
-  const navigate = useNavigate();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [redirect, setRedirect] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const { setUserInfo } = useContext(UserContext);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setUser((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setSuccess(""); // Reset success message
-
+  async function login(ev) {
+    ev.preventDefault();
     try {
-      console.log("Request Payload:", user); // Debugging line
-      const response = await axios.post("http://localhost:5000/api/auth/login", user, {
-        headers: {
-          "Content-Type": "application/json",
-        },
+      const response = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ username, password }),
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
       });
-      console.log("Response:", response); // Debugging line
-      if (response.status === 200) {
-        setSuccess("Login successful! Redirecting to home..."); // Set success message
+
+      const data = await response.json();
+      
+      if (response.ok) {
+        console.log('Login response:', data);
+        setUserInfo(data.user || data);
+        setSuccess('Login successful! Redirecting...');
         setTimeout(() => {
-          navigate("/");
-        }, 2000); // Redirect after 2 seconds
+          setRedirect(true);
+        }, 1000); // Redirect after 1 second
+      } else {
+        setError(data.message || 'Login failed');
       }
-    } catch (err) {
-      console.error("Error Response:", err.response); // Debugging line
-      setError(err.response?.data?.message || "Failed to login.");
+    } catch (e) {
+      console.error('Login error:', e);
+      setError('Login failed. Please try again.');
     }
-  };
+  }
+
+  if (redirect) {
+    return <Navigate to={'/'} />
+  }
 
   return (
     <div className="container">
@@ -55,15 +53,15 @@ export default function LoginPage() {
       </div>
       <div className="input">
         {error && <div className="error-message" style={{color: 'red'}}>{error}</div>}
-        {success && <div className="success-message" style={{color: 'green'}}>{success}</div>} {}
-        <form className="login" onSubmit={handleSubmit}>
+        {success && <div className="success-message" style={{color: 'green'}}>{success}</div>}
+        <form className="login" onSubmit={login}>
           <input
             type="text"
             name="username"
             placeholder="Username"
             className="input-field"
-            value={user.username}
-            onChange={handleChange}
+            value={username}
+            onChange={ev => setUsername(ev.target.value)}
             required
           />
           <input
@@ -71,8 +69,8 @@ export default function LoginPage() {
             name="password"
             placeholder="Password"
             className="input-field"
-            value={user.password}
-            onChange={handleChange}
+            value={password}
+            onChange={ev => setPassword(ev.target.value)}
             required
           />
           <button type="submit">Login</button>

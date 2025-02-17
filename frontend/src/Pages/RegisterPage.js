@@ -9,7 +9,7 @@ export default function RegisterPage() {
     password: "",
   });
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState(""); // Add success state
+  const [success, setSuccess] = useState("");
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -33,11 +33,11 @@ export default function RegisterPage() {
         },
       });
       console.log("Response:", response); // Debugging line
-      if (response.status === 200) {
+      if (response.status === 201) {
         setSuccess("Registration successful! Redirecting to login..."); // Set success message
         setTimeout(() => {
           navigate("/login");
-        }, 1000); // Redirect after 1 seconds
+        }, 1000); // Redirect after 1 second
       }
     } catch (err) {
       console.error("Error Response:", err.response); // Debugging line
@@ -51,7 +51,7 @@ export default function RegisterPage() {
         <h4>Register</h4>
       </div>
       <div className="para">
-        Enter your email address to create an account.
+        Enter your username to create an account.
       </div>
       <div className="input">
         {error && <div className="error-message" style={{color: 'red'}}>{error}</div>}

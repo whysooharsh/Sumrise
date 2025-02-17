@@ -4,31 +4,37 @@ import axios from "axios";
 import { UserContext } from "./UserContext";
 
 export default function Header() {
-    const { info, setInfo } = useContext(UserContext);
+    const { userInfo, setUserInfo } = useContext(UserContext);
     const navigate = useNavigate();
     
     useEffect(() => {
-        axios.get('http://localhost:5000/api/auth/profile', {
-            withCredentials: true,
-        }).then(response => {
-            setInfo(response.data);
-        }).catch(error => {
-            console.log('Error fetching profile:', error);
-        });
-    }, [setInfo]); // Add setInfo as a dependency
+        if (!userInfo) {
+            axios.get('http://localhost:5000/api/auth/profile', {
+                withCredentials: true,
+            }).then(response => {
+                setUserInfo(response.data);
+            }).catch(error => {
+                console.log('Error fetching profile:', error);
+            });
+        }
+    }, [setUserInfo, userInfo]);
 
     function logout() {
         axios.post('http://localhost:5000/api/auth/logout', {}, {
             withCredentials: true,
-        }).then(() => {
-            setInfo(null);
-            navigate('/login'); 
-        }).catch(error => {
+        })
+        .then(() => {
+            setUserInfo(null);
+            navigate('/login');
+        })
+        .catch(error => {
             console.log('Error logging out:', error);
+            setUserInfo(null);
+            navigate('/login');
         });
     }
 
-    const username = info?.username;
+    const username = userInfo?.username;
 
     return (
         <header>
@@ -36,7 +42,7 @@ export default function Header() {
             <nav>
                 {username ? (
                     <>
-                        <Link to="/create">Create New Post</Link>
+                        <Link to="/create" className="create" >Create New Post</Link>
                         <button onClick={logout} style={{ cursor: 'pointer' }}>Logout ({username})</button>
                     </>
                 ) : (
@@ -46,11 +52,7 @@ export default function Header() {
                     </>
                 )}
             </nav>
-            {username && (
-                <button onClick={() => navigate('/create')} className="create-post-button">
-                    Create Post
-                </button>
-            )}
+            
         </header>
     );
 }
