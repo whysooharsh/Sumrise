@@ -1,3 +1,4 @@
+require("dotenv").config();
 const jwt = require('jsonwebtoken');
 
 module.exports = (req, res, next) => {
@@ -7,10 +8,11 @@ module.exports = (req, res, next) => {
   }
 
   try {
-    const { username, id } = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = { username, id };
+    const decoded = jwt.verify(token, process.env.JWT_SECRET); 
+    req.user = decoded;
     next();
   } catch (err) {
+    console.log('JWT verification failed:', err);
     return res.status(401).json({ message: "Unauthorized" });
   }
 };

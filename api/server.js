@@ -2,21 +2,26 @@ require('dotenv').config();
 const express = require("express");
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-const connectDB = require('./config/db');
 const path = require('path');
+const connectDB = require('./config/db');
 
 const app = express();
 
-app.use(cors({
-    origin: 'http://localhost:3000', 
-    credentials: true
-}));
+const corsOptions = {
+    credentials: true,
+    origin: process.env.ORIGIN || "http://localhost:3000", 
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    exposedHeaders: ["Set-Cookie"],
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use((err, req, res, next) => {
-    if(err instanceof SyntaxError){
+    if (err instanceof SyntaxError) {
         return res.status(400).json({
             error: "Invalid JSON format"
         });
@@ -40,7 +45,7 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 
-async function main(){
+async function main() {
     try {
         app.listen(PORT, () => {
             console.log(`Server running on port ${PORT}`);

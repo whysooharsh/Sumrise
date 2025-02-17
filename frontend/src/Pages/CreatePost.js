@@ -1,8 +1,32 @@
 import { useState } from "react";
-import { useNavigate, Navigate } from "react-router-dom"; 
+import { useNavigate, Navigate } from "react-router-dom";
 import "react-quill/dist/quill.snow.css";
 import axios from "axios";
 import Editor from "../Editor";
+
+// some err in brave browser
+// fixed using copilot
+
+const resizeObserverLoopErr = () => {
+  const resizeObserverErrDiv = document.createElement('div');
+  resizeObserverErrDiv.id = 'resizeObserverErrDiv';
+  resizeObserverErrDiv.style.display = 'none';
+  document.body.appendChild(resizeObserverErrDiv);
+  const resizeObserverErr = () => {
+    const errDiv = document.getElementById('resizeObserverErrDiv');
+    if (errDiv) {
+      errDiv.innerHTML += 'ResizeObserver loop completed with undelivered notifications.<br>';
+    }
+  };
+  window.addEventListener('error', (event) => {
+    if (event.message === 'ResizeObserver loop completed with undelivered notifications') {
+      event.stopImmediatePropagation();
+      resizeObserverErr();
+    }
+  });
+};
+
+resizeObserverLoopErr();
 
 export default function CreatePost() {
   const [post, setPost] = useState({
@@ -26,37 +50,46 @@ export default function CreatePost() {
     }));
   };
 
+  const logCookies = () => {
+    const cookies = document.cookie.split('; ');
+    console.log("Cookies:", cookies);
+  };
+
   const createPost = async (e) => {
     e.preventDefault();
     setStatus((s) => ({ ...s, error: "", loading: true }));
-
+  
     const formData = new FormData();
     formData.append("title", post.title);
     formData.append("summary", post.summary);
     formData.append("content", post.content);
     if (post.file) formData.append("file", post.file);
-
+  
     try {
-      const token = document.cookie.split('; ').find(row => row.startsWith('token=')).split('=')[1];
+    
       const response = await axios.post("http://localhost:5000/api/blogs", formData, {
         withCredentials: true,
         headers: {
           "Content-Type": "multipart/form-data",
-          "Authorization": `Bearer ${token}` 
+          // Dont manually set the Authorization header here
+          // boz token is already sent as an httpOnly cookie 
         },
       });
-
+  
+      console.log("Response:", response);
       if (response.status === 201) {
         setStatus((s) => ({ ...s, redirect: true }));
       }
     } catch (err) {
+      console.error("Error:", err); 
       setStatus((s) => ({
         ...s,
         loading: false,
-        error: err.response?.data?.message || "Failed to create post.",
+        error: err.response?.data?.message || err.message || "Failed to create post.",
       }));
     }
   };
+  
 
   if (status.redirect) {
     return <Navigate to="/" />;

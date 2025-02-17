@@ -1,3 +1,4 @@
+require("dotenv").config();
 const multer = require('multer');
 const fs = require('fs');
 const Post = require('../Models/Post');
@@ -28,7 +29,7 @@ module.exports = {
 
     createPost: async (req, res) => {
         const { title, summary, content } = req.body;
-        const token = req.cookies.token || req.headers.authorization?.split(' ')[1]; // Ensure token is correctly parsed
+        const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
         
         if (!token) return res.status(401).json({ message: "Not authenticated" });
 
@@ -58,7 +59,7 @@ module.exports = {
         });
     },
 
-    updatePost: async (req, res) => {
+    updatePost:  async (req, res) => {
         try {
             const { token } = req.cookies;
             if (!token) return res.status(401).json({ message: "Not authenticated" });
