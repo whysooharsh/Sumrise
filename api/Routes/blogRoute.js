@@ -4,13 +4,12 @@ const router = Router();
 const upload = multer({ dest: 'uploads/' });
 
 const blogController = require('../Controllers/blogController'); 
-const authMiddleware = require('../middleware/authMiddleware'); 
-router.post('/', authMiddleware, upload.single('file'), blogController.createPost);
-router.post('/post', authMiddleware, upload.single('file'), blogController.createPost);
+const verifyTokenMiddleware = require('../middleware/tokenMiddleware');
 
 router.get('/', blogController.getAllPosts);
 router.get('/:id', blogController.getPostById);
-router.put('/:id', blogController.updatePost);
-router.delete('/:id', blogController.deletePost);
+router.post('/post', verifyTokenMiddleware, upload.single('file'), blogController.createPost);
+router.put('/:id', verifyTokenMiddleware, upload.single('file'), blogController.updatePost);
+router.delete('/:id', verifyTokenMiddleware, blogController.deletePost);
 
 module.exports = router;

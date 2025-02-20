@@ -21,7 +21,7 @@ export default function EditPost() {
     const fetchPost = async () => {
       setStatus((s) => ({ ...s, loading: true }));
       try {
-        const response = await axios.get(`http://localhost:5000/post/${id}`);
+        const response = await axios.get(`http://localhost:5000/posts/${id}`);
         setPost({
           title: response.data.title,
           summary: response.data.summary,
@@ -61,7 +61,7 @@ export default function EditPost() {
     if (post.file) formData.append("file", post.file);
 
     try {
-      const response = await axios.put("http://localhost:5000/post", formData, {
+      const response = await axios.put("http://localhost:5000/posts", formData, {
         withCredentials: true,
         headers: {
           "Content-Type": "multipart/form-data",
@@ -81,7 +81,7 @@ export default function EditPost() {
   };
 
   if (status.redirect) {
-    return <Navigate to={`/post/${id}`} />;
+    return <Navigate to={`/posts/${id}`} />;
   }
 
   return (

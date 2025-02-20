@@ -24,7 +24,6 @@ export default function LoginPage() {
       const data = await response.json();
       
       if (response.ok) {
-        console.log('Login response:', data);
         setUserInfo(data.user || data);
         setSuccess('Login successful! Redirecting...');
         setTimeout(() => {

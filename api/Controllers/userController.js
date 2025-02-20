@@ -1,6 +1,5 @@
 require("dotenv").config();
 const User = require('../Models/User');
-const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
 module.exports = {
@@ -27,7 +26,6 @@ module.exports = {
         try {
             const { username, password, email } = req.body;
             
-          
             const existingUser = await User.findOne({ $or: [{ username }, { email }] });
             if (existingUser) {
                 return res.status(400).json({ message: "Username or email already exists" });
@@ -54,33 +52,27 @@ module.exports = {
 
     updateUser: async (req, res) => {
         try {
-            const { token } = req.cookies;
-            if (!token) return res.status(401).json({ message: "Not authenticated" });
+            if (req.user.id !== req.params.id) {
+                return res.status(403).json({ message: "Not authorized" });
+            }
 
-            jwt.verify(token, process.env.JWT_SECRET, {}, async (err, info) => {
-                if (err) return res.status(401).json({ message: "Invalid token" });
-                if (info.id !== req.params.id) {
-                    return res.status(403).json({ message: "Not authorized" });
-                }
+            const { username, email, password } = req.body;
+            const updateData = {};
+            
+            if (username) updateData.username = username;
+            if (email) updateData.email = email;
+            if (password) {
+                const salt = await bcrypt.genSalt(10);
+                updateData.password = await bcrypt.hash(password, salt);
+            }
 
-                const { username, email, password } = req.body;
-                const updateData = {};
-                
-                if (username) updateData.username = username;
-                if (email) updateData.email = email;
-                if (password) {
-                    const salt = await bcrypt.genSalt(10);
-                    updateData.password = await bcrypt.hash(password, salt);
-                }
+            const updatedUser = await User.findByIdAndUpdate(
+                req.params.id,
+                updateData,
+                { new: true, select: '-password' }
+            );
 
-                const updatedUser = await User.findByIdAndUpdate(
-                    req.params.id,
-                    updateData,
-                    { new: true, select: '-password' }
-                );
-
-                res.json(updatedUser);
-            });
+            res.json(updatedUser);
         } catch (error) {
             res.status(500).json({ message: "Error updating user" });
         }
@@ -88,37 +80,27 @@ module.exports = {
 
     deleteUser: async (req, res) => {
         try {
-            const { token } = req.cookies;
-            if (!token) return res.status(401).json({ message: "Not authenticated" });
+            if (req.user.id !== req.params.id) {
+                return res.status(403).json({ message: "Not authorized" });
+            }
 
-            jwt.verify(token, process.env.JWT_SECRET, {}, async (err, info) => {
-                if (err) return res.status(401).json({ message: "Invalid token" });
-                if (info.id !== req.params.id) {
-                    return res.status(403).json({ message: "Not authorized" });
-                }
-
-                await User.findByIdAndDelete(req.params.id);
-                res.clearCookie('token');
-                res.json({ message: "User deleted successfully" });
-            });
+            await User.findByIdAndDelete(req.params.id);
+            res.clearCookie('token');
+            res.json({ message: "User deleted successfully" });
         } catch (error) {
             res.status(500).json({ message: "Error deleting user" });
         }
     },
 
     getUserProfile: async (req, res) => {
-        const { token } = req.cookies;
-        if (!token) return res.status(401).json({ message: "Not authenticated" });
-
-        jwt.verify(token, process.env.JWT_SECRET, {}, async (err, info) => {
-            if (err) return res.status(401).json({ message: "Invalid token" });
-            
-            try {
-                const user = await User.findById(info.id, { password: 0 });
-                res.json(user);
-            } catch (error) {
-                res.status(500).json({ message: "Error fetching profile" });
+        try {
+            const user = await User.findById(req.user.id).select('-password');
+            if (!user) {
+                return res.status(404).json({ message: "User not found" });
             }
-        });
+            res.json(user);
+        } catch (error) {
+            res.status(500).json({ message: "Error fetching profile" });
+        }
     }
 };

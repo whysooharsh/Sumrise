@@ -4,30 +4,6 @@ import "react-quill/dist/quill.snow.css";
 import axios from "axios";
 import Editor from "../Editor";
 
-// some err in brave browser
-// fixed using copilot
-
-const resizeObserverLoopErr = () => {
-  const resizeObserverErrDiv = document.createElement('div');
-  resizeObserverErrDiv.id = 'resizeObserverErrDiv';
-  resizeObserverErrDiv.style.display = 'none';
-  document.body.appendChild(resizeObserverErrDiv);
-  const resizeObserverErr = () => {
-    const errDiv = document.getElementById('resizeObserverErrDiv');
-    if (errDiv) {
-      errDiv.innerHTML += 'ResizeObserver loop completed with undelivered notifications.<br>';
-    }
-  };
-  window.addEventListener('error', (event) => {
-    if (event.message === 'ResizeObserver loop completed with undelivered notifications') {
-      event.stopImmediatePropagation();
-      resizeObserverErr();
-    }
-  });
-};
-
-resizeObserverLoopErr();
-
 export default function CreatePost() {
   const [post, setPost] = useState({
     title: "",
@@ -69,12 +45,9 @@ export default function CreatePost() {
     formData.append("summary", post.summary);
     formData.append("content", post.content);
     if (post.file) formData.append("file", post.file);
-    for (let [key, value] of formData.entries()) {
-      console.log(`${key}: ${value}`);
-    }
 
     try {
-      const response = await axios.post("http://localhost:5000/api/blogs", formData, {
+      const response = await axios.post("http://localhost:5000/api/blogs/post", formData, {
         withCredentials: true,
         headers: {
           "Content-Type": "multipart/form-data",

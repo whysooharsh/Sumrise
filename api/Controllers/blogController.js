@@ -2,7 +2,6 @@ require("dotenv").config();
 const multer = require('multer');
 const fs = require('fs');
 const Post = require('../Models/Post');
-const jwt = require('jsonwebtoken');
 const upload = multer({ dest: 'uploads/' });
 
 module.exports = {
@@ -13,7 +12,7 @@ module.exports = {
                 .sort({ createdAt: -1 });
             res.json(posts);
         } catch (error) {
-            res.status(500).json({ message: "Error fetching posts",error:error.message });
+            res.status(500).json({ message: "Error fetching posts", error: error.message });
         }
     },
 
@@ -28,14 +27,7 @@ module.exports = {
     },
 
     createPost: async (req, res) => {
-        const { title, summary, content } = req.body;
-        const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
-        
-        if (!token) return res.status(401).json({ message: "Not authenticated" });
-
-        jwt.verify(token, process.env.JWT_SECRET, {}, async (err, info) => {
-            if (err) return res.status(401).json({ message: "Invalid token" });
-
+        try {
             let newPath = null;
             if (req.file) {
                 const { originalname, path } = req.file;
@@ -44,53 +36,45 @@ module.exports = {
                 fs.renameSync(path, newPath);
             }
 
-            try {
-                const postDoc = await Post.create({
-                    title,
-                    summary,
-                    content,
-                    cover: newPath,
-                    author: info.id,
-                });
-                res.status(201).json(postDoc); 
-            } catch (error) {
-                res.status(500).json({ message: "Error creating post" });
-            }
-        });
+            const { title, summary, content } = req.body;
+            const postDoc = await Post.create({
+                title,
+                summary,
+                content,
+                cover: newPath,
+                author: req.user.id, 
+            });
+            res.status(201).json(postDoc);
+        } catch (error) {
+            res.status(500).json({ message: "Error creating post" });
+        }
     },
 
-    updatePost:  async (req, res) => {
+    updatePost: async (req, res) => {
         try {
-            const { token } = req.cookies;
-            if (!token) return res.status(401).json({ message: "Not authenticated" });
+            const post = await Post.findById(req.params.id);
+            if (!post) return res.status(404).json({ message: "Post not found" });
+            
+            const isAuthor = JSON.stringify(post.author) === JSON.stringify(req.user.id);
+            if (!isAuthor) return res.status(403).json({ message: "You are not the author" });
 
-            jwt.verify(token, process.env.JWT_SECRET, {}, async (err, info) => {
-                if (err) return res.status(401).json({ message: "Invalid token" });
+            let newPath = post.cover;
+            if (req.file) {
+                const { originalname, path } = req.file;
+                const ext = originalname.split('.').pop();
+                newPath = `${path}.${ext}`;
+                fs.renameSync(path, newPath);
+            }
 
-                const post = await Post.findById(req.params.id);
-                if (!post) return res.status(404).json({ message: "Post not found" });
-                
-                const isAuthor = JSON.stringify(post.author) === JSON.stringify(info.id);
-                if (!isAuthor) return res.status(400).json({ message: "You are not the author" });
-
-                let newPath = post.cover;
-                if (req.file) {
-                    const { originalname, path } = req.file;
-                    const ext = originalname.split('.').pop();
-                    newPath = `${path}.${ext}`;
-                    fs.renameSync(path, newPath);
-                }
-
-                const { title, summary, content } = req.body;
-                await Post.findByIdAndUpdate(req.params.id, {
-                    title,
-                    summary,
-                    content,
-                    cover: newPath
-                });
-
-                res.json({ message: "Post updated successfully" });
+            const { title, summary, content } = req.body;
+            await Post.findByIdAndUpdate(req.params.id, {
+                title,
+                summary,
+                content,
+                cover: newPath
             });
+
+            res.json({ message: "Post updated successfully" });
         } catch (error) {
             res.status(500).json({ message: "Error updating post" });
         }
@@ -98,21 +82,14 @@ module.exports = {
 
     deletePost: async (req, res) => {
         try {
-            const { token } = req.cookies;
-            if (!token) return res.status(401).json({ message: "Not authenticated" });
+            const post = await Post.findById(req.params.id);
+            if (!post) return res.status(404).json({ message: "Post not found" });
 
-            jwt.verify(token, process.env.JWT_SECRET, {}, async (err, info) => {
-                if (err) return res.status(401).json({ message: "Invalid token" });
+            const isAuthor = JSON.stringify(post.author) === JSON.stringify(req.user.id);
+            if (!isAuthor) return res.status(403).json({ message: "You are not the author" });
 
-                const post = await Post.findById(req.params.id);
-                if (!post) return res.status(404).json({ message: "Post not found" });
-
-                const isAuthor = JSON.stringify(post.author) === JSON.stringify(info.id);
-                if (!isAuthor) return res.status(400).json({ message: "You are not the author" });
-
-                await Post.findByIdAndDelete(req.params.id);
-                res.json({ message: "Post deleted successfully" });
-            });
+            await Post.findByIdAndDelete(req.params.id);
+            res.json({ message: "Post deleted successfully" });
         } catch (error) {
             res.status(500).json({ message: "Error deleting post" });
         }

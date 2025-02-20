@@ -1,4 +1,5 @@
 import { useEffect, useContext } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import { PostsContext } from "../PostsContext";
 
@@ -31,7 +32,7 @@ export default function IndexPage() {
             <div key={post._id} className="post-card">
               <h2>{post.title}</h2>
               <p>{post.summary}</p>
-              <a href={`/posts/${post._id}`}>Read More</a>
+              <Link to={`/post/${post._id}`}>Read More</Link>
             </div>
           ))
         ) : (

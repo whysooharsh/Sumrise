@@ -1,26 +1,9 @@
 require("dotenv").config();
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 const User = require('../Models/User');
+const { createToken } = require('../utils/jwtUtils');
 
-const secret = process.env.JWT_SECRET || 'fallback_secret';
 const saltRounds = 10;
-
-const createToken = (user) => {
-    return jwt.sign(
-        { id: user._id, username: user.username },
-        secret,
-        { expiresIn: '1h' }
-    );
-};
-
-const verifyToken = (token) => {
-    try {
-        return jwt.verify(token, secret);
-    } catch (err) {
-        return null;
-    }
-};
 
 module.exports = {
     login: async (req, res) => {
@@ -36,7 +19,7 @@ module.exports = {
                 return res.status(400).json({ message: "User not found" });
             }
 
-            const passOk = bcrypt.compareSync(password, userDoc.password);
+            const passOk = await bcrypt.compare(password, userDoc.password);
             if (!passOk) {
                 return res.status(400).json({ message: "Wrong credentials" });
             }
@@ -47,11 +30,12 @@ module.exports = {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
                 sameSite: 'strict',
-                maxAge: 60 * 60 * 1000,
+                maxAge: 60 * 60 * 1000, // 1 hour
                 path: '/'
             }).json({
                 id: userDoc._id,
                 username,
+                token, 
                 message: "Login successful"
             });
 
@@ -70,10 +54,10 @@ module.exports = {
                 return res.status(400).json({ message: "Username already exists" });
             }
 
-            const hashedPassword = bcrypt.hashSync(password, bcrypt.genSaltSync(saltRounds));
+            const hashedPassword = await bcrypt.hash(password, saltRounds);
 
             const newUser = await User.create({
-                username: username,
+                username,
                 password: hashedPassword
             });
 
@@ -89,42 +73,17 @@ module.exports = {
         }
     },
 
-    profile: (req, res) => {
+    profile: async (req, res) => {
         try {
-            const token = req.cookies.token;
-            if (!token) {
-                return res.status(401).json({ message: "Not logged in" });
+            const user = await User.findById(req.user.id).select('-password');
+            if (!user) {
+                return res.status(404).json({ message: "User not found" });
             }
-
-            const userInfo = verifyToken(token);
-            if (!userInfo) {
-                return res.status(401).json({ message: "Invalid or expired token" });
-            }
-
-            res.json(userInfo);
-
+            res.json(user);
         } catch (err) {
             console.error("Profile Error:", err);
             res.status(500).json({ message: "Error checking profile" });
         }
-    },
-
-    refreshToken: (req, res) => {
-        const token = req.cookies.token;
-        const userInfo = verifyToken(token);
-
-        if (!userInfo) {
-            return res.status(401).json({ message: "Invalid or expired token" });
-        }
-
-        const newToken = createToken(userInfo);
-        res.cookie('token', newToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            maxAge: 60 * 60 * 1000,
-            path: '/'
-        }).json({ message: "Token refreshed" });
     },
 
     logout: (req, res) => {
