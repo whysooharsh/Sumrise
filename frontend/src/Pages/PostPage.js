@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import axios from "axios";  
+import DOMpurify from 'dompurify';
 
 export default function PostPage() {
   const { id } = useParams(); 
@@ -35,7 +36,7 @@ export default function PostPage() {
         />
       )}
       <div 
-        dangerouslySetInnerHTML={{ __html: post.content }}
+        dangerouslySetInnerHTML={{ __html: DOMpurify.sanitize(post.content) }}
         className="content"
       />
     </div>
