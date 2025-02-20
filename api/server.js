@@ -4,9 +4,39 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 const connectDB = require('./config/db');
 
 const app = express();
+
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, 
+    max: 100, 
+    message: 'Too many requests from this IP, please try again later.',
+    standardHeaders: true, 
+    legacyHeaders: false, 
+});
+
+const authLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000, 
+    max: 5, 
+    message: 'Too many login attempts, please try again later.',
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
+const createPostLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000,
+    max: 10,
+    message: 'Post creation limit reached, please try again later.',
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
+app.use(limiter);
+app.use('/api/auth/login', authLimiter); 
+app.use('/api/auth/register', authLimiter);
+app.use('/api/blogs/post', createPostLimiter);
 
 const cspConfig = {
     directives: {
@@ -23,7 +53,6 @@ const cspConfig = {
         upgradeInsecureRequests: [],
     }
 };
-
 
 const corsOptions = {
     credentials: true,
@@ -55,6 +84,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 
 app.use((err, req, res, next) => {
     if (err instanceof SyntaxError) {
