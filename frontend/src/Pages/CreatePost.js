@@ -50,32 +50,37 @@ export default function CreatePost() {
     }));
   };
 
-  const logCookies = () => {
-    const cookies = document.cookie.split('; ');
-    console.log("Cookies:", cookies);
+  const validateInput = () => {
+    if (!post.title || !post.summary || !post.content) {
+      setStatus((s) => ({ ...s, error: "All fields are required." }));
+      return false;
+    }
+    return true;
   };
 
   const createPost = async (e) => {
     e.preventDefault();
     setStatus((s) => ({ ...s, error: "", loading: true }));
-  
+
+    if (!validateInput()) return;
+
     const formData = new FormData();
     formData.append("title", post.title);
     formData.append("summary", post.summary);
     formData.append("content", post.content);
     if (post.file) formData.append("file", post.file);
-  
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}: ${value}`);
+    }
+
     try {
-    
       const response = await axios.post("http://localhost:5000/api/blogs", formData, {
         withCredentials: true,
         headers: {
           "Content-Type": "multipart/form-data",
-          // Dont manually set the Authorization header here
-          // boz token is already sent as an httpOnly cookie 
         },
       });
-  
+
       console.log("Response:", response);
       if (response.status === 201) {
         setStatus((s) => ({ ...s, redirect: true }));
@@ -89,7 +94,6 @@ export default function CreatePost() {
       }));
     }
   };
-  
 
   if (status.redirect) {
     return <Navigate to="/" />;

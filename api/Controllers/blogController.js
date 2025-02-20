@@ -13,7 +13,7 @@ module.exports = {
                 .sort({ createdAt: -1 });
             res.json(posts);
         } catch (error) {
-            res.status(500).json({ message: "Error fetching posts" });
+            res.status(500).json({ message: "Error fetching posts",error:error.message });
         }
     },
 

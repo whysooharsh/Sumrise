@@ -8,10 +8,11 @@ import RegisterPage from "./Pages/RegisterPage";
 import CreatePost from "./Pages/CreatePost";
 import PostPage from "./Pages/PostPage";
 import EditPost from "./Pages/EditPost";
-
+import { PostsProvider } from "./PostsContext";
 
 function App() {
   return (
+    <PostsProvider>
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<IndexPage />} />
@@ -22,6 +23,7 @@ function App() {
           <Route path="/edit/:id" element={<EditPost />} />
         </Route>
       </Routes>
+    </PostsProvider>
   );
 }
 

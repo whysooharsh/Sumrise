@@ -23,24 +23,21 @@ export default function RegisterPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    setSuccess(""); // Reset success message
+    setSuccess(""); 
 
     try {
-      console.log("Request Payload:", user); // Debugging line
       const response = await axios.post("http://localhost:5000/api/auth/register", user, {
         headers: {
           "Content-Type": "application/json",
         },
       });
-      console.log("Response:", response); // Debugging line
       if (response.status === 201) {
-        setSuccess("Registration successful! Redirecting to login..."); // Set success message
+        setSuccess("Registration successful! Redirecting to login..."); 
         setTimeout(() => {
           navigate("/login");
-        }, 1000); // Redirect after 1 second
+        }, 1000); 
       }
     } catch (err) {
-      console.error("Error Response:", err.response); // Debugging line
       setError(err.response?.data?.message || "Failed to register.");
     }
   };
