@@ -28,12 +28,9 @@ module.exports = {
 
     createPost: async (req, res) => {
         try {
-            let newPath = null;
+            let filePath = null;
             if (req.file) {
-                const { originalname, path } = req.file;
-                const ext = originalname.split('.').pop();
-                newPath = `${path}.${ext}`;
-                fs.renameSync(path, newPath);
+                filePath = req.file.path;
             }
 
             const { title, summary, content } = req.body;
@@ -41,11 +38,12 @@ module.exports = {
                 title,
                 summary,
                 content,
-                cover: newPath,
-                author: req.user.id, 
+                cover: filePath,
+                author: req.user.id,
             });
             res.status(201).json(postDoc);
         } catch (error) {
+            console.error('Create post error:', error);
             res.status(500).json({ message: "Error creating post" });
         }
     },
@@ -58,12 +56,9 @@ module.exports = {
             const isAuthor = JSON.stringify(post.author) === JSON.stringify(req.user.id);
             if (!isAuthor) return res.status(403).json({ message: "You are not the author" });
 
-            let newPath = post.cover;
+            let filePath = post.cover;
             if (req.file) {
-                const { originalname, path } = req.file;
-                const ext = originalname.split('.').pop();
-                newPath = `${path}.${ext}`;
-                fs.renameSync(path, newPath);
+                filePath = req.file.path;
             }
 
             const { title, summary, content } = req.body;
@@ -71,11 +66,12 @@ module.exports = {
                 title,
                 summary,
                 content,
-                cover: newPath
+                cover: filePath
             });
 
             res.json({ message: "Post updated successfully" });
         } catch (error) {
+            console.error('Update post error:', error);
             res.status(500).json({ message: "Error updating post" });
         }
     },
