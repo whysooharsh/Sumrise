@@ -10,9 +10,10 @@ export default function PostPage() {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/post/${id}`);
+        const response = await axios.get(`http://localhost:5000/api/blogs/${id}`);
         setPost(response.data);
       } catch (err) {
+        console.error('Error fetching post:', err);
         setError("Failed to load post.");
       }
     };
@@ -27,8 +28,16 @@ export default function PostPage() {
     <div className="post-page">
       <h1>{post.title}</h1>
       <p>{post.summary}</p>
-      {post.cover && <img src={`http://localhost:5000/${post.cover}`} alt="Cover" />}
-      <p>{post.content}</p>
+      {post.cover && (
+        <img 
+          src={`http://localhost:5000/${post.cover}`} 
+          alt="Cover" 
+        />
+      )}
+      <div 
+        dangerouslySetInnerHTML={{ __html: post.content }}
+        className="content"
+      />
     </div>
   );
 }
