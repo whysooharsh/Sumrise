@@ -33,7 +33,7 @@ const createPostLimiter = rateLimit({
     legacyHeaders: false,
 });
 
-app.use(limiter);
+app.use(limiter); // this might make me sick
 app.use('/api/auth/login', authLimiter); 
 app.use('/api/auth/register', authLimiter);
 app.use('/api/blogs/post', createPostLimiter);
@@ -45,7 +45,7 @@ const cspConfig = {
         styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
         imgSrc: ["'self'", "data:", "blob:", "https:"],
         fontSrc: ["'self'", "https://fonts.gstatic.com"],
-        connectSrc: ["'self'", "http://localhost:5000", "http://localhost:3000"],
+        connectSrc: ["'self'", "http://localhost:5000", "http://localhost:3000", ""],
         mediaSrc: ["'self'"],
         objectSrc: ["'none'"],
         frameSrc: ["'self'"],
@@ -53,6 +53,9 @@ const cspConfig = {
         upgradeInsecureRequests: [],
     }
 };
+
+// all this shit can't be written my me 
+// claude baba came to rescue
 
 const corsOptions = {
     credentials: true,
@@ -62,7 +65,7 @@ const corsOptions = {
     exposedHeaders: ["Set-Cookie"],
 };
 
-
+// this one too
 app.use(helmet());
 app.use(helmet.contentSecurityPolicy(cspConfig));
 app.use(helmet.crossOriginEmbedderPolicy({ policy: "credentialless" }));

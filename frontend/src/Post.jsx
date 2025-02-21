@@ -3,6 +3,7 @@ import { formatISO9075 } from 'date-fns';
 
 export default function Post({ _id, cover, title, author, createdAt, summary }) {
     return (
+        
         <div className="post">
             <div className="image">
                 <Link to={`/post/${_id}`}>
