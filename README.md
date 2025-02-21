@@ -25,6 +25,12 @@ A lightning-fast(yet to be), no-nonsense blogging platform with sleek design wit
 - MongoDB 
 - JWT 
 
+## TO-DO
+-profile
+-edit post
+-delete post
+-caching
+
 ## Getting Started
 
 1. Clone the repository
