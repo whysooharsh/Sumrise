@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const path = require('path');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const csrf = require('lusca').csrf;
 const connectDB = require('./config/db');
 
 const app = express();
@@ -87,7 +88,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
+app.use(csrf());
 
 app.use((err, req, res, next) => {
     if (err instanceof SyntaxError) {
