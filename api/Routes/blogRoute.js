@@ -69,5 +69,6 @@ router.put('/:id',
     blogController.updatePost
 );
 router.delete('/:id', verifyTokenMiddleware, blogController.deletePost);
+router.get('/user-posts', verifyTokenMiddleware, blogController.getUserPosts);
 
 module.exports = router;

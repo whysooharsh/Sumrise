@@ -9,6 +9,9 @@ const connectDB = require('./config/db');
 
 const app = express();
 
+//checkInstance();
+
+
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, 
     max: 100, 
@@ -33,7 +36,7 @@ const createPostLimiter = rateLimit({
     legacyHeaders: false,
 });
 
-app.use(limiter); // this might make me sick
+//app.use(limiter); // this might make me sick
 app.use('/api/auth/login', authLimiter); 
 app.use('/api/auth/register', authLimiter);
 app.use('/api/blogs/post', createPostLimiter);
@@ -55,7 +58,7 @@ const cspConfig = {
 };
 
 // all this shit can't be written my me 
-// claude baba came to rescue
+
 
 const corsOptions = {
     credentials: true,

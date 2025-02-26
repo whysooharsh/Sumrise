@@ -89,5 +89,15 @@ module.exports = {
         } catch (error) {
             res.status(500).json({ message: "Error deleting post" });
         }
+    },
+
+    getUserPosts: async (req, res) => {
+        try {
+            const posts = await Post.find({ author: req.user.id })
+                .sort({ createdAt: -1 });
+            res.json(posts);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
     }
 };

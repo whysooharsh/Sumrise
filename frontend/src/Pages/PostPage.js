@@ -153,7 +153,7 @@ export default function PostPage() {
           display: 'flex',
           gap: '20px'
         }}>
-          <a href="https://twitter.com/whysooharsh" 
+          <a href="https://twitter.com/elonmusk" 
              target="_blank" 
              rel="noopener noreferrer"
              style={{ color: '#1DA1F2', fontSize: '24px' }}>
