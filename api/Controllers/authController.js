@@ -5,6 +5,15 @@ const { createToken } = require('../utils/jwtUtils');
 
 const saltRounds = 10;
 
+const crypto = require('crypto');
+
+function encryptToken(token) {
+    const cipher = crypto.createCipher('aes-256-ctr', process.env.ENCRYPTION_SECRET);
+    let encrypted = cipher.update(token, 'utf8', 'hex');
+    encrypted += cipher.final('hex');
+    return encrypted;
+}
+
 module.exports = {
     login: async (req, res) => {
         const { username, password } = req.body;
@@ -25,8 +34,9 @@ module.exports = {
             }
 
             const token = createToken(userDoc);
+            const encryptedToken = encryptToken(token);
 
-            res.cookie('token', token, {
+            res.cookie('token', encryptedToken, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
                 sameSite: 'strict',
