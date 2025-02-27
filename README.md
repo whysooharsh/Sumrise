@@ -28,6 +28,8 @@ A lightning-fast(yet to be), no-nonsense blogging platform with sleek design wit
 ## Images
 
 
+## TO-DO
+-caching
 
 ## Getting Started
 

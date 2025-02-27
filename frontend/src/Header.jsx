@@ -70,7 +70,7 @@ export default function Header() {
                 {username ? (
                     <>
                         {location.pathname === "/" && (
-                            <Link to="/create" className="create" >Create New Post</Link>
+                            <Link to="/create" className="create" ><button>Create New Post</button></Link>
                         )}
                         {location.pathname === "/" && (
                             <button onClick={logout} style={{ cursor: 'pointer' }}>Logout ({username})</button>
