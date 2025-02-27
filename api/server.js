@@ -63,14 +63,22 @@ const cspConfig = {
 const corsOptions = {
     credentials: true,
     origin: [
-        'https://sumrise-jet.vercel.app',
-        'http://localhost:3000'
+        'http://localhost:3000',
+        'https://sumrise-jet.vercel.app' 
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization', 'CSRF-Token'],
+    exposedHeaders: ['set-cookie'],
 };
 
 app.use(cors(corsOptions));
+
+// Make sure this is before your routes
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Origin', 'https://sumrise-jet.vercel.app');
+    next();
+});
 
 // this one too
 app.use(helmet());
