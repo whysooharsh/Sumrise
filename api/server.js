@@ -36,7 +36,7 @@ const createPostLimiter = rateLimit({
     legacyHeaders: false,
 });
 
-app.use(limiter); // this might make me sick
+//app.use(limiter); // this might make me sick
 app.use('/api/auth/login', authLimiter); 
 app.use('/api/auth/register', authLimiter);
 app.use('/api/blogs/post', createPostLimiter);
