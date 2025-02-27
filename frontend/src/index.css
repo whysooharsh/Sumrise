@@ -11,31 +11,3 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
-
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(5px);
-}
-
-.modal {
-    position: absolute;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: white;
-    padding: 20px;
-    width: 300px;
-}
-
-.modal-buttons {
-    text-align: right;
-}
-
-.modal-buttons button {
-    margin-left: 10px;
-}
