@@ -1,6 +1,5 @@
 # Sumrise
 
-(Not completed yet)
 A lightning-fast(yet to be), no-nonsense blogging platform with sleek design with a rock-solid backend. 
 
 ## Features
@@ -29,7 +28,7 @@ A lightning-fast(yet to be), no-nonsense blogging platform with sleek design wit
 
 
 ## TO-DO
--caching
+-caching(redis)
 
 ## Getting Started
 
