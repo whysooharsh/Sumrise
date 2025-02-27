@@ -8,11 +8,25 @@ const saltRounds = 10;
 const crypto = require('crypto');
 
 function encryptToken(token) {
-    const cipher = crypto.createCipher('aes-256-ctr', process.env.ENCRYPTION_SECRET);
+    const algorithm = 'aes-256-ctr';
+    const iv = crypto.randomBytes(16);
+    const key = crypto.scryptSync(process.env.ENCRYPTION_SECRET, 'salt', 32);
+    const cipher = crypto.createCipheriv(algorithm, key, iv);
     let encrypted = cipher.update(token, 'utf8', 'hex');
     encrypted += cipher.final('hex');
-    return encrypted;
+    return iv.toString('hex') + ':' + encrypted;
 }
+
+function decryptToken(encryptedToken) {
+    const [iv, encrypted] = encryptedToken.split(':');
+    const algorithm = 'aes-256-ctr';
+    const key = crypto.scryptSync(process.env.ENCRYPTION_SECRET, 'salt', 32);
+    const decipher = crypto.createDecipheriv(algorithm, key, Buffer.from(iv, 'hex'));
+    let decrypted = decipher.update(Buffer.from(encrypted, 'hex'), 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+    return decrypted;
+}
+
 
 module.exports = {
     login: async (req, res) => {
