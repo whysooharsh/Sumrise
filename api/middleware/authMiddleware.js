@@ -12,7 +12,6 @@ module.exports = (req, res, next) => {
     req.user = decoded;
     next();
   } catch (err) {
-    console.log('JWT verification failed:', err);
     return res.status(401).json({ message: "Unauthorized" });
   }
 };

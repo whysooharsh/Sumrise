@@ -54,7 +54,6 @@ export default function CreatePost() {
         },
       });
 
-      console.log("Response:", response);
       if (response.status === 201) {
         setStatus((s) => ({ ...s, redirect: true }));
       }

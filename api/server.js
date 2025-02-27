@@ -36,7 +36,7 @@ const createPostLimiter = rateLimit({
     legacyHeaders: false,
 });
 
-//app.use(limiter); // this might make me sick
+app.use(limiter); // this might make me sick
 app.use('/api/auth/login', authLimiter); 
 app.use('/api/auth/register', authLimiter);
 app.use('/api/blogs/post', createPostLimiter);
@@ -96,6 +96,12 @@ app.use((err, req, res, next) => {
     if (err instanceof SyntaxError) {
         return res.status(400).json({
             error: "Invalid JSON format"
+        });
+    }
+    if (err.code === 'EBADCSRFTOKEN') {
+        return res.status(403).json({
+            error: 'Invalid CSRF token',
+            message: 'Form submission failed. Please try again.'
         });
     }
     next();
