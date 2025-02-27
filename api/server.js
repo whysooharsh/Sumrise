@@ -62,10 +62,12 @@ const cspConfig = {
 
 const corsOptions = {
     credentials: true,
-    origin: process.env.ORIGIN || "http://localhost:3000",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    exposedHeaders: ["Set-Cookie"],
+    origin: [
+        'http://localhost:3000',
+        'https://sumrise-nine.vercel.app/' 
+    ],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'CSRF-Token'],
 };
 
 // this one too
