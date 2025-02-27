@@ -61,9 +61,10 @@ export default function EditPost() {
     if (post.file) formData.append("file", post.file);
 
     try {
-      const response = await axios.put(`${API_BASE_URL}/posts`, formData, {
+      const response = await axios.put(`${API_BASE_URL}/api/post/$  {id}`, formData, {
         withCredentials: true,
         headers: {
+          
           "Content-Type": "multipart/form-data",
         },
       });

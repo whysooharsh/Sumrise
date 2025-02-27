@@ -47,7 +47,7 @@ export default function CreatePost() {
     if (post.file) formData.append("file", post.file);
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/api/blogs/post`, formData, {
+      const response = await axios.post(`${API_BASE_URL}/api/post`, formData, {
         withCredentials: true,
         headers: {
           "Content-Type": "multipart/form-data",

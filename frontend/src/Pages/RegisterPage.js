@@ -27,7 +27,10 @@ export default function RegisterPage() {
     setSuccess(""); 
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/api/auth/register`, user, {
+      const response = await axios.post(`${API_BASE_URL}/api/auth/register`, {
+        username: user.username,
+        password: user.password,
+      }, {
         headers: {
           "Content-Type": "application/json",
         },

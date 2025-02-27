@@ -45,7 +45,7 @@ export default function Header() {
     }
     function deletePost() {
         if (window.confirm('Are you sure you want to delete this post?')) {
-                axios.delete(`${API_BASE_URL}/api/blogs/${postId}`, {
+                axios.delete(`${API_BASE_URL}/api/post/${postId}`, {
                 withCredentials: true,
                 headers: {
                     'Content-Type': 'application/json',

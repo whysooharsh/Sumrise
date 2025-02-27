@@ -63,8 +63,8 @@ const cspConfig = {
 const corsOptions = {
     credentials: true,
     origin: [
-        'http://localhost:3000',
-        'https://sumrise-nine.vercel.app/' 
+        'https://sumrise-jet.vercel.app/',
+        'http://localhost:3000'
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization', 'CSRF-Token'],
