@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";  
 import { UserContext } from "./UserContext";
-
+const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 export default function Header() {
     const location = useLocation();
     const { userInfo, setUserInfo } = useContext(UserContext);
@@ -11,7 +11,7 @@ export default function Header() {
 
     useEffect(() => {
         if (!userInfo) {
-            axios.get('http://localhost:5000/api/auth/profile', {
+            axios.get(`${API_BASE_URL}/api/auth/profile`, {
                 withCredentials: true,
             }).then(response => {
                 setUserInfo(response.data);
@@ -30,7 +30,7 @@ export default function Header() {
     }, [location]);
 
     function logout() {
-        axios.post('http://localhost:5000/api/auth/logout', {}, {
+        axios.post(`${API_BASE_URL}/api/auth/logout`, {}, {
             withCredentials: true,
         })
         .then(() => {
@@ -45,7 +45,7 @@ export default function Header() {
     }
     function deletePost() {
         if (window.confirm('Are you sure you want to delete this post?')) {
-            axios.delete(`http://localhost:5000/api/blogs/${postId}`, {
+                axios.delete(`${API_BASE_URL}/api/blogs/${postId}`, {
                 withCredentials: true,
                 headers: {
                     'Content-Type': 'application/json',

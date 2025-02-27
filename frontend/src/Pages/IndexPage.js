@@ -2,6 +2,7 @@ import { useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { PostsContext } from "../PostsContext";
+const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
 export default function IndexPage() {
   const { posts, setPosts } = useContext(PostsContext);
@@ -9,7 +10,7 @@ export default function IndexPage() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/blogs", {
+          const res = await axios.get(`${API_BASE_URL}/api/blogs`, {
           withCredentials: true,
           headers: {
             "Authorization": `Bearer ${document.cookie.split('=')[1]}`,
@@ -80,7 +81,7 @@ export default function IndexPage() {
                 justifyContent: 'center'
               }}>
                 <img
-                  src={post.cover ? `http://localhost:5000/${post.cover.replace(/\\/g, '/')}` : "https://res.cloudinary.com/dpwqggym0/image/upload/v1740162998/yg5ensxbj69mjlxsrvts.avif"}
+                  src={post.cover ? `${API_BASE_URL}/${post.cover.replace(/\\/g, '/')}` : "https://res.cloudinary.com/dpwqggym0/image/upload/v1740162998/yg5ensxbj69mjlxsrvts.avif"}
                   alt=""
                   onError={(e) => {
                     e.target.onerror = null;

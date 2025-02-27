@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";  
 import DOMpurify from 'dompurify';
 import { FaTwitter, FaLinkedin } from 'react-icons/fa';
+const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
 export default function PostPage() {
   const { id } = useParams(); 
@@ -15,7 +16,7 @@ export default function PostPage() {
     const fetchPost = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`http://localhost:5000/api/blogs/${id}`);
+        const response = await axios.get(`${API_BASE_URL}/api/blogs/${id}`);
         setPost(response.data);
       } catch (err) {
         console.error('Error fetching post:', err);
@@ -87,7 +88,7 @@ export default function PostPage() {
 
       {post.cover && (
         <img 
-          src={`http://localhost:5000/${post.cover}`} 
+          src={`${API_BASE_URL}/${post.cover}`} 
           alt={post.title}
           style={{
             width: '100%',

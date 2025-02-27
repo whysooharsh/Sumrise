@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Navigate, useParams } from "react-router-dom";
 import axios from "axios";
 import Editor from "../Editor";
-
+const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 export default function EditPost() {
   const { id } = useParams();
   const [post, setPost] = useState({
@@ -21,7 +21,7 @@ export default function EditPost() {
     const fetchPost = async () => {
       setStatus((s) => ({ ...s, loading: true }));
       try {
-        const response = await axios.get(`http://localhost:5000/posts/${id}`);
+        const response = await axios.get(`${API_BASE_URL}/posts/${id}`);
         setPost({
           title: response.data.title,
           summary: response.data.summary,
@@ -61,7 +61,7 @@ export default function EditPost() {
     if (post.file) formData.append("file", post.file);
 
     try {
-      const response = await axios.put("http://localhost:5000/posts", formData, {
+      const response = await axios.put(`${API_BASE_URL}/posts`, formData, {
         withCredentials: true,
         headers: {
           "Content-Type": "multipart/form-data",

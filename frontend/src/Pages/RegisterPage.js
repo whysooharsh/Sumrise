@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import './LoginPage.css';
+const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
 export default function RegisterPage() {
   const [user, setUser] = useState({
@@ -26,7 +27,7 @@ export default function RegisterPage() {
     setSuccess(""); 
 
     try {
-      const response = await axios.post("http://localhost:5000/api/auth/register", user, {
+      const response = await axios.post(`${API_BASE_URL}/api/auth/register`, user, {
         headers: {
           "Content-Type": "application/json",
         },

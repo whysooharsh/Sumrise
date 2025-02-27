@@ -3,7 +3,7 @@ import { useNavigate, Navigate } from "react-router-dom";
 import "react-quill/dist/quill.snow.css";
 import axios from "axios";
 import Editor from "../Editor";
-
+const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 export default function CreatePost() {
   const [post, setPost] = useState({
     title: "",
@@ -47,7 +47,7 @@ export default function CreatePost() {
     if (post.file) formData.append("file", post.file);
 
     try {
-      const response = await axios.post("http://localhost:5000/api/blogs/post", formData, {
+      const response = await axios.post(`${API_BASE_URL}/api/blogs/post`, formData, {
         withCredentials: true,
         headers: {
           "Content-Type": "multipart/form-data",
