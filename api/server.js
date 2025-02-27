@@ -63,12 +63,14 @@ const cspConfig = {
 const corsOptions = {
     credentials: true,
     origin: [
-        'https://sumrise-jet.vercel.app/',
+        'https://sumrise-jet.vercel.app',
         'http://localhost:3000'
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization', 'CSRF-Token'],
 };
+
+app.use(cors(corsOptions));
 
 // this one too
 app.use(helmet());
@@ -88,7 +90,7 @@ app.use(helmet.referrerPolicy());
 app.use(helmet.xssFilter());
 
 
-app.use(cors(corsOptions));
+
 app.use(express.json());
 app.use(cookieParser());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
