@@ -11,7 +11,7 @@ const app = express();
 
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, 
-    max: 100, 
+    max: 500, 
     message: 'Too many requests from this IP, please try again later.',
     standardHeaders: true, 
     legacyHeaders: false, 
@@ -19,7 +19,7 @@ const limiter = rateLimit({
 
 const authLimiter = rateLimit({
     windowMs: 60 * 60 * 1000, 
-    max: 5, 
+    max: 20, 
     message: 'Too many login attempts, please try again later.',
     standardHeaders: true,
     legacyHeaders: false,
@@ -27,7 +27,7 @@ const authLimiter = rateLimit({
 
 const createPostLimiter = rateLimit({
     windowMs: 60 * 60 * 1000,
-    max: 10,
+    max: 50,
     message: 'Post creation limit reached, please try again later.',
     standardHeaders: true,
     legacyHeaders: false,
