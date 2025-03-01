@@ -1,11 +1,14 @@
-
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import "react-quill/dist/quill.snow.css";
-import axios from "axios";
 import Editor from "../Editor";
+import { UserContext } from "../UserContext";
+import api from '../api';
+
 const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+
 export default function CreatePost() {
+  const { userInfo } = useContext(UserContext);
   const [post, setPost] = useState({
     title: "",
     summary: "",
@@ -18,6 +21,12 @@ export default function CreatePost() {
     redirect: false,
   });
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!userInfo) {
+      navigate('/login');
+    }
+  }, [userInfo, navigate]);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -48,18 +57,12 @@ export default function CreatePost() {
     if (post.file) formData.append("file", post.file);
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/api/post`, formData, {
-        withCredentials: true,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
+      const response = await api.post('/api/blogs/post', formData);
       if (response.status === 201) {
         setStatus((s) => ({ ...s, redirect: true }));
       }
     } catch (err) {
-      console.error("Error:", err); 
+      console.error("Error:", err);
       setStatus((s) => ({
         ...s,
         loading: false,

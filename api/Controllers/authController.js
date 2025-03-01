@@ -52,14 +52,14 @@ module.exports = {
 
             res.cookie('token', encryptedToken, {
                 httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: 'strict',
+                secure: true,
+                sameSite: 'none',
                 maxAge: 60 * 60 * 1000, // 1 hour
-                path: '/'
+                path: '/',
+                domain: process.env.NODE_ENV === 'production' ? '.onrender.com' : 'localhost'
             }).json({
                 id: userDoc._id,
                 username,
-                token, 
                 message: "Login successful"
             });
 
@@ -113,9 +113,10 @@ module.exports = {
     logout: (req, res) => {
         res.clearCookie('token', {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            path: '/'
+            secure: true,
+            sameSite: 'none',
+            path: '/',
+            domain: process.env.NODE_ENV === 'production' ? '.onrender.com' : 'localhost'
         }).json({ message: "Logged out successfully" });
     }
 };
