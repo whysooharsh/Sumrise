@@ -6,6 +6,9 @@ import axios from "axios";
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
+
+axios.defaults.withCredentials = true;
+
 export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -22,7 +25,7 @@ export default function LoginPage() {
         password
       }, {
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         withCredentials: true
       });
@@ -40,7 +43,13 @@ export default function LoginPage() {
       }
     } catch (e) {
       console.error('Login error:', e);
-      setError('Login failed. Please try again.');
+      if (e.response) {
+        setError(e.response.data.message || 'Login failed');
+      } else if (e.request) {
+        setError('Network error. Please check your connection.');
+      } else {
+        setError('Login failed. Please try again.');
+      }
     }
   }
 
