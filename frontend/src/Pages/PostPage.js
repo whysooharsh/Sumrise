@@ -16,7 +16,7 @@ export default function PostPage() {
     const fetchPost = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`http://localhost:5000/api/blogs/${id}`);
+        const response = await axios.get(`${API_BASE_URL}/api/blogs/${id}`);
         setPost(response.data); 
       } catch (error) {
         if (error.response?.status === 404) {

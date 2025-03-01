@@ -45,7 +45,7 @@ const cspConfig = {
         styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
         imgSrc: ["'self'", "data:", "blob:", "https:"],
         fontSrc: ["'self'", "https://fonts.gstatic.com"],
-        connectSrc: ["'self'", "http://localhost:5000", "http://localhost:3000"],
+        connectSrc: ["'self'", "https://sumrise.onrender.com", "https://sumrise-jet.vercel.app"],
         mediaSrc: ["'self'"],
         objectSrc: ["'none'"],
         frameSrc: ["'self'"],
@@ -56,7 +56,7 @@ const cspConfig = {
 
 const corsOptions = {
     credentials: true,
-    origin: process.env.ORIGIN || "http://localhost:3000",
+    origin: process.env.ORIGIN || "https://sumrise-jet.vercel.app",
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     exposedHeaders: ["Set-Cookie"],

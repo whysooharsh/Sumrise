@@ -5,8 +5,6 @@ import Editor from "../Editor";
 import { UserContext } from "../UserContext";
 import api from '../api';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
-
 export default function CreatePost() {
   const { userInfo } = useContext(UserContext);
   const [post, setPost] = useState({
