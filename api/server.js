@@ -32,8 +32,8 @@ const createPostLimiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false,
 });
+app.set("trust proxy", true);
 
-app.use(limiter);
 app.use('/api/auth/login', authLimiter); 
 app.use('/api/auth/register', authLimiter);
 app.use('/api/blogs/post', createPostLimiter);
@@ -55,34 +55,43 @@ const cspConfig = {
 };
 
 const corsOptions = {
-    credentials: true,
-    origin: process.env.ORIGIN || "https://sumrise-jet.vercel.app",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    exposedHeaders: ["Set-Cookie"],
+  credentials: true,
+  origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+          callback(null, true);
+      } else {
+          callback(new Error("Not allowed by CORS"));
+      }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  exposedHeaders: ["Set-Cookie"],
+
 };
 
 
-app.use(helmet());
-app.use(helmet.contentSecurityPolicy(cspConfig));
-app.use(helmet.crossOriginEmbedderPolicy({ policy: "credentialless" }));
-app.use(helmet.crossOriginOpenerPolicy({ policy: "same-origin" }));
-app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
-app.use(helmet.dnsPrefetchControl());
-app.use(helmet.frameguard({ action: "deny" }));
-app.use(helmet.hidePoweredBy());
-app.use(helmet.hsts());
-app.use(helmet.ieNoOpen());
-app.use(helmet.noSniff());
-app.use(helmet.originAgentCluster());
-app.use(helmet.permittedCrossDomainPolicies());
-app.use(helmet.referrerPolicy());
-app.use(helmet.xssFilter());
+app.use(helmet({
+  contentSecurityPolicy: cspConfig,
+  crossOriginEmbedderPolicy: { policy: "credentialless" },
+  crossOriginOpenerPolicy: { policy: "same-origin" },
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  dnsPrefetchControl: true,
+  frameguard: { action: "deny" },
+  hidePoweredBy: true,
+  hsts: true,
+  ieNoOpen: true,
+  noSniff: true,
+  originAgentCluster: true,
+  permittedCrossDomainPolicies: true,
+  referrerPolicy: { policy: "strict-origin-when-cross-origin" },
+  xssFilter: true,
+}));
 
 
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
+
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
@@ -101,13 +110,16 @@ app.use("/api/auth", require('./Routes/authRoute'));
 app.use('/api/users', require('./Routes/userRoute'));
 app.use('/api/blogs', require('./Routes/blogRoute'));
 
+app.use(limiter);
+
 app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({
-        error: 'Something broke!',
-        message: process.env.NODE_ENV === 'development' ? err.message : 'Internal Server Error'
-    });
+  console.error("Error:", process.env.NODE_ENV === 'development' ? err.stack : err.message);
+  res.status(500).json({
+      error: 'Something went wrong!',
+      message: process.env.NODE_ENV === 'development' ? err.message : 'Internal Server Error'
+  });
 });
+
 
 const PORT = process.env.PORT || 5000;
 
