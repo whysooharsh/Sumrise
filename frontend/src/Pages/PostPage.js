@@ -16,11 +16,16 @@ export default function PostPage() {
     const fetchPost = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`${API_BASE_URL}/api/post/${id}`);
-        setPost(response.data);
-      } catch (err) {
-        console.error('Error fetching post:', err);
-        setError("Failed to load post.");
+        const response = await axios.get(`http://localhost:5000/api/blogs/${id}`);
+        setPost(response.data); 
+      } catch (error) {
+        if (error.response?.status === 404) {
+          console.error('Post not found');
+          setError("Failed to load post.");
+        } else {
+          console.error('Error fetching post:', error);
+          setError("Failed to load post.");
+        }
       }
       finally{
         setLoading(false);
