@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const multer = require("multer");
 const path = require("path");
+const rateLimit = require("express-rate-limit");
 const router = Router();
 
 const storage = multer.diskStorage({
@@ -69,6 +70,12 @@ router.put('/:id',
     blogController.updatePost
 );
 router.delete('/:id', verifyTokenMiddleware, blogController.deletePost);
-router.get('/user-posts', verifyTokenMiddleware, blogController.getUserPosts);
+const userPostsRateLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per windowMs
+    message: { message: "Too many requests, please try again later." }
+});
+
+router.get('/user-posts', userPostsRateLimiter, verifyTokenMiddleware, blogController.getUserPosts);
 
 module.exports = router;
