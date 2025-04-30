@@ -59,8 +59,18 @@ module.exports = {
             const { username, email, password } = req.body;
             const updateData = {};
             
-            if (username) updateData.username = username;
-            if (email) updateData.email = email;
+            if (username) {
+                if (typeof username !== "string") {
+                    return res.status(400).json({ message: "Invalid username" });
+                }
+                updateData.username = username;
+            }
+            if (email) {
+                if (typeof email !== "string") {
+                    return res.status(400).json({ message: "Invalid email" });
+                }
+                updateData.email = email;
+            }
             if (password) {
                 const salt = await bcrypt.genSalt(10);
                 updateData.password = await bcrypt.hash(password, salt);
@@ -68,7 +78,7 @@ module.exports = {
 
             const updatedUser = await User.findByIdAndUpdate(
                 req.params.id,
-                updateData,
+                { $set: updateData },
                 { new: true, select: '-password' }
             );
 
