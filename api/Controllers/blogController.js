@@ -58,6 +58,9 @@ module.exports = {
 
             let filePath = post.cover;
             if (req.file) {
+                if (typeof req.file.path !== 'string' || !/^[\w\-./]+$/.test(req.file.path)) {
+                    return res.status(400).json({ message: "Invalid file path" });
+                }
                 filePath = req.file.path;
             }
 
