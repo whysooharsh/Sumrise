@@ -1,12 +1,9 @@
 import axios from 'axios';
-import { backendUrl } from './config';
+import { apiBaseUrl } from './config';
 
-export const fetchData = async (endpoint) => {
-  try {
-    const response = await axios.get(`${backendUrl}/${endpoint}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    throw error;
-  }
-};
+axios.defaults.withCredentials = true;
+
+export const api = axios.create({
+  baseURL: apiBaseUrl,
+  withCredentials: true,
+});

@@ -16,12 +16,14 @@ export default function Editor({value,onChange}) {
     ],
   };
   return (
-    <div className="content">
-    <ReactQuill
-      value={value}
-      theme={'snow'}
-      onChange={onChange}
-      modules={modules} />
+    <div className="border border-gray-300 rounded-md overflow-hidden">
+      <ReactQuill
+        value={value}
+        theme={'snow'}
+        onChange={onChange}
+        modules={modules}
+        className="bg-white"
+      />
     </div>
   );
 }

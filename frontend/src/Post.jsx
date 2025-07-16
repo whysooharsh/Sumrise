@@ -1,22 +1,36 @@
-export default function Post(){
+import {formatISO9075} from "date-fns";
+import {Link} from "react-router-dom";
+import {backendUrl} from './config';
 
-    return (
-        <div className="post">
-                <div className="image">
-                <img src='https://wallpapercave.com/wp/wp2691077.jpg' width={700}></img>
-                </div>
-                <div className="texts">
-                <h2>HotDog</h2>
-                <p className = "info">
-                    <a className='author'>Harsh Sharma</a>
-                    <time>2024-10-10 22:03</time>
-                </p>
-                <p className = 'summary'><h3>Hot Dogs: The Comedic King of the Grill</h3>
-                    Ah, the hot dog. The only food that can make you feel like a child and a gourmet chef at the same time.
-                    A Little History    
-            Rumor has it that hot dogs originated from German sausages, but honestly, they could have been invented by a hungry guy trying to impress his date. “Look, honey! I can put meat in a bun!”
-            </p>
-            </div>
-            </div>
-    )
+export default function Post({_id,title,summary,cover,content,createdAt,author}) {
+  return (
+    <div className="border-b border-gray-200 pb-6 mb-6">
+      <div className="flex gap-4">
+        <div className="flex-1">
+          <Link to={`/post/${_id}`}>
+            <h2 className="text-xl font-medium text-black hover:text-gray-600 mb-2">
+              {title}
+            </h2>
+          </Link>
+          <p className="text-gray-600 mb-3">{summary}</p>
+          <div className="flex items-center gap-3 text-sm text-gray-500">
+            <span>by {author.username}</span>
+            <span>•</span>
+            <time>{formatISO9075(new Date(createdAt))}</time>
+          </div>
+        </div>
+        {cover && (
+          <div className="w-20 h-20 flex-shrink-0">
+            <Link to={`/post/${_id}`}>
+              <img 
+                src={`${backendUrl}/${cover}`} 
+                alt={title}
+                className="w-full h-full object-cover rounded"
+              />
+            </Link>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }

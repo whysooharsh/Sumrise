@@ -2,7 +2,13 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../Models/User');
 
-const secret = process.env.JWT_SECRET || 'fallback_secret';
+
+if (!process.env.JWT_SECRET) {
+    console.error('JWT_SECRET is not defined in environment variables');
+    process.exit(1);
+}
+
+const secret = process.env.JWT_SECRET;
 const salt = bcrypt.genSaltSync(10);
 
 module.exports = {

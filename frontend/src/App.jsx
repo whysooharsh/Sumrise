@@ -1,13 +1,13 @@
 import './App.css';
 import {Route, Routes} from "react-router-dom";
-import Layout from "./Layout";
-import IndexPage from "./Pages/IndexPage";
-import LoginPage from "./Pages/LoginPage";
-import RegisterPage from "./Pages/RegisterPage";
-import {UserContextProvider} from "./UserContext";
-import CreatePost from './Pages/CreatePost';
-import PostPage from './Pages/PostPage';
-import EditPost from './Pages/EditPost';
+import Layout from "./Layout.jsx";
+import IndexPage from "./Pages/IndexPage.jsx";
+import LoginPage from "./Pages/LoginPage.jsx";
+import RegisterPage from "./Pages/RegisterPage.jsx";
+import {UserContextProvider} from "./UserContext.jsx";
+import CreatePost from './Pages/CreatePost.jsx';
+import PostPage from './Pages/PostPage.jsx';
+import EditPost from './Pages/EditPost.jsx';
 
 function App() {
   return (
