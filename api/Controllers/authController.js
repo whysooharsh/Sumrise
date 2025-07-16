@@ -13,22 +13,26 @@ const salt = bcrypt.genSaltSync(10);
 
 module.exports = {
     login: async (req, res) => {
-        const { Username, Password } = req.body;
-        const username = Username.toLowerCase();
-        const password = Password.toLowerCase();
+        const { username, password } = req.body;
+        
+        if (!username || !password) {
+            return res.status(400).json('Username and password are required');
+        }
+        
+        const usernameToCheck = username.toLowerCase();
 
         try {
-            const userDoc = await User.findOne({ username });
+            const userDoc = await User.findOne({ username: usernameToCheck });
             if (!userDoc) {
                 return res.status(400).json('User not found');
             }
             const passOk = bcrypt.compareSync(password, userDoc.password);
             if (passOk) {
-                jwt.sign({ username, id: userDoc._id }, secret, {}, (err, token) => {
+                jwt.sign({ username: usernameToCheck, id: userDoc._id }, secret, {}, (err, token) => {
                     if (err) throw err;
                     res.cookie('token', token).json({
                         id: userDoc._id,
-                        username,
+                        username: usernameToCheck,
                     });
                 });
             } else {
@@ -40,13 +44,17 @@ module.exports = {
     },
 
     register: async (req, res) => {
-        const { Username, Password } = req.body;
-        const username = Username.toLowerCase();
-        const password = Password.toLowerCase();
+        const { username, password } = req.body;
+        
+        if (!username || !password) {
+            return res.status(400).json('Username and password are required');
+        }
+        
+        const usernameToSave = username.toLowerCase();
 
         try {
             const userDoc = await User.create({
-                username,
+                username: usernameToSave,
                 password: bcrypt.hashSync(password, salt),
             });
             res.json(userDoc);
@@ -54,6 +62,7 @@ module.exports = {
             res.status(400).json(e);
         }
     },
+
     profile: (req, res) => {
         try {
             const { token } = req.cookies;
@@ -71,7 +80,6 @@ module.exports = {
             res.status(500).json({ message: "Error checking profile" });
         }
     },
-    
 
     refreshToken: async (req, res) => {
         const {token} = req.cookies;
