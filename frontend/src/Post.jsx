@@ -1,6 +1,6 @@
 import {formatISO9075} from "date-fns";
 import {Link} from "react-router-dom";
-import {backendUrl} from './config';
+import {backendUrl} from './api';
 
 export default function Post({_id,title,summary,cover,content,createdAt,author}) {
   return (
