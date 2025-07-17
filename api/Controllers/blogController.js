@@ -34,14 +34,18 @@ module.exports = {
         if (!token) return res.status(401).json({ message: "Not authenticated" });
 
         jwt.verify(token, process.env.JWT_SECRET, {}, async (err, info) => {
-            if (err) return res.status(401).json({ message: "Invalid token" });
+            if (err) {
+                return res.status(401).json({ message: "Invalid token" });
+            }
 
             let newPath = null;
             if (req.file) {
                 const { originalname, path } = req.file;
                 const ext = originalname.split('.').pop();
-                newPath = `${path}.${ext}`;
-                fs.renameSync(path, newPath);
+                const filename = `${path}.${ext}`;
+                fs.renameSync(path, filename);
+                // Ensure forward slashes for URLs (replace backslashes on Windows)
+                newPath = filename.replace(/\\/g, '/');
             }
 
             try {
@@ -77,8 +81,10 @@ module.exports = {
                 if (req.file) {
                     const { originalname, path } = req.file;
                     const ext = originalname.split('.').pop();
-                    newPath = `${path}.${ext}`;
-                    fs.renameSync(path, newPath);
+                    const filename = `${path}.${ext}`;
+                    fs.renameSync(path, filename);
+                    // Ensure forward slashes for URLs (replace backslashes on Windows)
+                    newPath = filename.replace(/\\/g, '/');
                 }
 
                 const { title, summary, content } = req.body;

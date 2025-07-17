@@ -1,0 +1,14 @@
+{
+  "name": "surmise-backend",
+  "version": "1.0.0",
+  "description": "Backend for Surmise blog application",
+  "main": "api/server.js",
+  "scripts": {
+    "start": "cd api && npm start",
+    "dev": "cd api && npm run dev",
+    "install-api": "cd api && npm install"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

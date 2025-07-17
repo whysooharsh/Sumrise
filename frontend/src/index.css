@@ -7,9 +7,69 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #fafafa;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+/* Enhanced prose content styling */
+.prose {
+  color: #374151;
+}
+
+.prose img {
+  max-width: 100% !important;
+  height: auto !important;
+  display: block !important;
+  margin: 2rem auto !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+.prose p {
+  line-height: 1.8 !important;
+  margin-bottom: 1.5rem !important;
+}
+
+.prose h1, .prose h2, .prose h3 {
+  font-weight: 600 !important;
+  color: #111827 !important;
+  margin-top: 2rem !important;
+  margin-bottom: 1rem !important;
+}
+
+.prose blockquote {
+  border-left: 4px solid #3b82f6 !important;
+  padding-left: 1.5rem !important;
+  font-style: italic !important;
+  color: #6b7280 !important;
+  background: #f8fafc !important;
+  padding: 1rem 1.5rem !important;
+  margin: 1.5rem 0 !important;
+  border-radius: 8px !important;
+}
+
+.prose a {
+  color: #3b82f6 !important;
+  text-decoration: none !important;
+  font-weight: 500 !important;
+}
+
+.prose a:hover {
+  text-decoration: underline !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .prose img {
+    margin: 1.5rem auto !important;
+    border-radius: 8px !important;
+  }
+  
+  .prose {
+    font-size: 16px !important;
+  }
 }

@@ -23,27 +23,42 @@ export default function Header() {
   const username = userInfo?.username;
 
   return (
-    <header className="flex justify-between items-center py-6 mb-8 border-b border-gray-200">
-      <Link to="/" className="text-xl font-medium text-black">
-        Surmise
-      </Link>
-      <nav className="flex gap-4">
+    <header className="flex justify-between items-center py-8 mb-12 border-b border-gray-100">
+      <div className="flex items-center space-x-8">
+        <Link to="/" className="text-2xl font-bold text-gray-900 hover:text-gray-700 transition-colors">
+          Surmise
+        </Link>
+       
+      </div>
+      <nav className="flex items-center gap-6">
         {username && (
           <>
-            <Link to="/create" className="text-gray-600 hover:text-black">
+            <Link 
+              to="/create" 
+              className="text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200"
+            >
               Write
             </Link>
-            <button onClick={logout} className="text-gray-600 hover:text-black">
+            <button 
+              onClick={logout} 
+              className="text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200"
+            >
               Sign out
             </button>
           </>
         )}
         {!username && (
           <>
-            <Link to="/login" className="text-gray-600 hover:text-black">
+            <Link 
+              to="/login" 
+              className="text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200"
+            >
               Sign in
             </Link>
-            <Link to="/register" className="text-black">
+            <Link 
+              to="/register" 
+              className="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-800 font-medium transition-colors duration-200"
+            >
               Sign up
             </Link>
           </>

@@ -18,42 +18,20 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 
-app.use(helmet({
-  crossOriginEmbedderPolicy: false,
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      scriptSrc: ["'self'"],
-      imgSrc: ["'self'", "data:", "https:"],
-    },
-  },
-}));
-
-
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, 
-  max: 100, 
-  message: 'Too many requests from this IP, please try again later.',
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-app.use(limiter);
-
-
 const allowedOrigins = process.env.ALLOWED_ORIGINS 
   ? process.env.ALLOWED_ORIGINS.split(',') 
-  : process.env.NODE_ENV === 'production' 
-    ? ['https://sumrise.onrender.com'] 
-    : ['http://localhost:5173', 'http://localhost:3000'];
+  : [
+      'https://sumrise-jet.vercel.app', 
+      'https://sumrise.vercel.app',      
+      'http://localhost:5173'            
+    ];
 
 app.use(cors({
   credentials: true, 
   origin: function (origin, callback) {
-    
     if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.includes(origin) || origin.includes('sumrise.onrender.com')) {
+
+    if (allowedOrigins.includes(origin) || origin.includes('vercel.app') || origin.includes('localhost')) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
@@ -65,9 +43,22 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
+
+app.use('/uploads', (req, res, next) => {
+  const origin = req.get('Origin');
+  if (!origin) {
+    res.header('Access-Control-Allow-Origin', '*'); 
+  } else if (allowedOrigins.includes(origin) || origin.includes('vercel.app') || origin.includes('localhost')) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+  res.header('Access-Control-Allow-Credentials', 'true');
+  next();
+});
+
+
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production' && !process.env.VERCEL) {
   app.use(express.static(path.join(__dirname, '../frontend/dist')));
   app.get('*', (req, res) => {
     if (req.path.startsWith('/api/') || req.path.startsWith('/uploads/') || req.path === '/health') {
@@ -83,6 +74,8 @@ app.use('/api/posts', blogRoutes);
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
 });
+
+
 
 app.use((err, req, res, next) => {
     console.error('Error:', err);
@@ -109,13 +102,19 @@ app.use((err, req, res, next) => {
 async function main() {
     try {
         await connectDB();
-        app.listen(PORT, () => {
-            console.log(`Server running on port ${PORT}`);
-        });
     } catch (error) {
-        console.error('Server failed to start:', error);
+        console.error('Database connection failed:', error);
         process.exit(1);
     }
 }
 
 main();
+
+module.exports = app;
+
+if (require.main === module) {
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+}
