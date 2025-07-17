@@ -30,7 +30,12 @@ module.exports = {
             if (passOk) {
                 jwt.sign({ username: usernameToCheck, id: userDoc._id }, secret, {}, (err, token) => {
                     if (err) throw err;
-                    res.cookie('token', token).json({
+                    res.cookie('token', token, {
+                        httpOnly: true,
+                        secure: process.env.NODE_ENV === 'production',
+                        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+                        maxAge: 24 * 60 * 60 * 1000 
+                    }).json({
                         id: userDoc._id,
                         username: usernameToCheck,
                     });
@@ -90,6 +95,11 @@ module.exports = {
     },
 
     logout: (req, res) => {
-        res.cookie('token', '').json('ok');
+        res.cookie('token', '', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            maxAge: 0
+        }).json('ok');
     }
 };

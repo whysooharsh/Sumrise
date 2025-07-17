@@ -21,8 +21,7 @@ if (process.env.NODE_ENV === 'production') {
 const allowedOrigins = process.env.ALLOWED_ORIGINS 
   ? process.env.ALLOWED_ORIGINS.split(',') 
   : [
-      'https://sumrise-jet.vercel.app', 
-      'https://sumrise.vercel.app',      
+      'https://sumrise-jet.vercel.app',
       'http://localhost:5173'            
     ];
 
