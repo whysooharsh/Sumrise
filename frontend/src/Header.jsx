@@ -59,7 +59,7 @@ export default function Header() {
               to="/register" 
               className="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-800 font-medium transition-colors duration-200"
             >
-              Sign up
+              Register
             </Link>
           </>
         )}

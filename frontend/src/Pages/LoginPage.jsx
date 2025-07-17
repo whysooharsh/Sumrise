@@ -12,19 +12,23 @@ export default function LoginPage() {
   const [errorMessage, setErrorMessage] = useState("");
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   async function login(ev) {
     ev.preventDefault();
+    setIsLoading(true);
     try {
       const response = await api.post("/auth/login", { username, password });
       setUserInfo(response.data);
+      setIsLoading(false);
       setSuccessMessage("SignIn Successful, Redirecting to the Home page");
       setShowSuccessModal(true);
       
       setTimeout(() => {
         setRedirect(true);
-      }, 2000);
+      }, 1000);
     } catch (error) {
+      setIsLoading(false);
       setErrorMessage("Wrong credentials! Please try again.");
       setShowErrorModal(true);
     }
@@ -43,17 +47,30 @@ export default function LoginPage() {
           placeholder="Username"
           value={username}
           onChange={(ev) => setUsername(ev.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-black"
+          disabled={isLoading}
+          className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-black disabled:bg-gray-100 disabled:cursor-not-allowed"
         />
         <input
           type="password"
           placeholder="Password"
           value={password}
           onChange={(ev) => setPassword(ev.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-black"
+          disabled={isLoading}
+          className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-black disabled:bg-gray-100 disabled:cursor-not-allowed"
         />
-        <button className="w-full bg-black text-white py-2 rounded hover:bg-gray-800">
-          Sign in
+        <button 
+          type="submit"
+          disabled={isLoading}
+          className="w-full bg-black text-white py-2 rounded hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center"
+        >
+          {isLoading ? (
+            <>
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+              Signing in...
+            </>
+          ) : (
+            "Sign in"
+          )}
         </button>
       </form>
       {showErrorModal && (
@@ -100,8 +117,10 @@ export default function LoginPage() {
             </h2>
             <p className="mt-2 text-sm text-gray-600">{successMessage}</p>
             <div className="mt-4 flex items-center justify-center">
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900"></div>
-              <span className="ml-2 text-sm text-gray-600">Redirecting...</span>
+              <div className="relative">
+                <div className="w-8 h-8 border-4 border-gray-200 rounded-full animate-spin border-t-black"></div>
+              </div>
+              <span className="ml-3 text-sm text-gray-600 font-medium">Redirecting to home page...</span>
             </div>
           </div>
         </div>
