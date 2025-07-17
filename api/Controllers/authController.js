@@ -34,6 +34,7 @@ module.exports = {
                         httpOnly: true,
                         secure: process.env.NODE_ENV === 'production',
                         sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+                        domain: process.env.NODE_ENV === 'production' ? undefined : undefined,
                         maxAge: 24 * 60 * 60 * 1000 
                     }).json({
                         id: userDoc._id,
@@ -99,6 +100,7 @@ module.exports = {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            domain: process.env.NODE_ENV === 'production' ? undefined : undefined,
             maxAge: 0
         }).json('ok');
     }

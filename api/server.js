@@ -22,7 +22,9 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(',') 
   : [
       'https://sumrise-jet.vercel.app',
-      'http://localhost:5173'            
+      'https://www.sumrise-jet.vercel.app',
+      'http://localhost:5173',
+      'http://localhost:3000'            
     ];
 
 app.use(cors({

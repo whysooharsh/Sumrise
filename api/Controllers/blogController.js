@@ -44,7 +44,7 @@ module.exports = {
                 const ext = originalname.split('.').pop();
                 const filename = `${path}.${ext}`;
                 fs.renameSync(path, filename);
-                // Ensure forward slashes for URLs (replace backslashes on Windows)
+                
                 newPath = filename.replace(/\\/g, '/');
             }
 
@@ -83,7 +83,7 @@ module.exports = {
                     const ext = originalname.split('.').pop();
                     const filename = `${path}.${ext}`;
                     fs.renameSync(path, filename);
-                    // Ensure forward slashes for URLs (replace backslashes on Windows)
+                    
                     newPath = filename.replace(/\\/g, '/');
                 }
 

@@ -7,11 +7,17 @@ export default function Header() {
   const {setUserInfo,userInfo} = useContext(UserContext);
   
   useEffect(() => {
-    api.get('/auth/profile').then(response => {
-      setUserInfo(response.data);
-    }).catch(() => {
-      setUserInfo(null);
-    });
+    // Add delay to prevent hydration issues
+    const timer = setTimeout(() => {
+      api.get('/auth/profile').then(response => {
+        setUserInfo(response.data);
+      }).catch(error => {
+        console.log('Profile fetch failed:', error.response?.status || error.message);
+        setUserInfo(null);
+      });
+    }, 100);
+
+    return () => clearTimeout(timer);
   }, [setUserInfo]);
 
   function logout() {
