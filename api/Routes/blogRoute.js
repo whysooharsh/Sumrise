@@ -4,7 +4,6 @@ const router = Router();
 
 const blogController = require('../Controllers/blogController');
 
-// Configure multer for file uploads
 const uploadMiddleware = multer({ dest: "uploads/" });
 
 router.get('/', blogController.getAllPosts);

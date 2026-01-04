@@ -69,7 +69,7 @@ export default function EditPost() {
         <Editor onChange={setContent} value={content} />
         <button 
           type="submit"
-          className="bg-black text-white py-2 px-6 rounded hover:bg-gray-800"
+          className="bg-[#0a0a0a] text-white py-2 px-6 rounded-md hover:bg-black"
         >
           Update Post
         </button>

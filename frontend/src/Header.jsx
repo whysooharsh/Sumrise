@@ -4,21 +4,22 @@ import {UserContext} from "./UserContext.jsx";
 import {api} from "./api";
 
 export default function Header() {
-  const {setUserInfo,userInfo} = useContext(UserContext);
+  const {setUserInfo, userInfo, loading, setLoading} = useContext(UserContext);
   
   useEffect(() => {
-    // Add delay to prevent hydration issues
     const timer = setTimeout(() => {
       api.get('/auth/profile').then(response => {
         setUserInfo(response.data);
+        setLoading(false);
       }).catch(error => {
         console.log('Profile fetch failed:', error.response?.status || error.message);
         setUserInfo(null);
+        setLoading(false);
       });
     }, 100);
 
     return () => clearTimeout(timer);
-  }, [setUserInfo]);
+  }, [setUserInfo, setLoading]);
 
   function logout() {
     api.post('/auth/logout').then(() => {
@@ -37,36 +38,42 @@ export default function Header() {
        
       </div>
       <nav className="flex items-center gap-6">
-        {username && (
+        {loading ? (
+          <div className="w-24 h-9 bg-gray-100 rounded-md animate-pulse"></div>
+        ) : (
           <>
-            <Link 
-              to="/create" 
-              className="text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200"
-            >
-              Write
-            </Link>
-            <button 
-              onClick={logout} 
-              className="text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200"
-            >
-              Sign out
-            </button>
-          </>
-        )}
-        {!username && (
-          <>
-            <Link 
-              to="/login" 
-              className="text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200"
-            >
-              Sign in
-            </Link>
-            <Link 
-              to="/register" 
-              className="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-800 font-medium transition-colors duration-200"
-            >
-              Register
-            </Link>
+            {username && (
+              <>
+                <Link 
+                  to="/create" 
+                  className="text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200"
+                >
+                  Write
+                </Link>
+                <button 
+                  onClick={logout} 
+                  className="text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200"
+                >
+                  Sign out
+                </button>
+              </>
+            )}
+            {!username && (
+              <>
+                <Link 
+                  to="/login" 
+                  className="text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200"
+                >
+                  Sign in
+                </Link>
+                <Link 
+                  to="/register" 
+                  className="bg-[#0a0a0a] text-white px-4 py-2 rounded-md hover:bg-black font-medium transition-colors duration-200"
+                >
+                  Register
+                </Link> 
+              </>
+            )}
           </>
         )}
       </nav>

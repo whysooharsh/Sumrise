@@ -6,20 +6,48 @@ import {Link} from 'react-router-dom';
 import {api} from '../api';
 import {backendUrl} from "../api";
 
+function PostPageSkeleton() {
+  return (
+    <article className="max-w-none animate-pulse">
+      <header className="mb-12">
+        <div className="h-10 bg-gray-200 rounded-md w-3/4 mb-6"></div>
+        <div className="flex items-center gap-4 mb-6">
+          <div className="h-4 bg-gray-200 rounded-md w-32"></div>
+          <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
+          <div className="h-4 bg-gray-200 rounded-md w-40"></div>
+        </div>
+      </header>
+      <div className="mb-12 h-96 bg-gray-200 rounded-xl"></div>
+      <div className="space-y-4">
+        <div className="h-4 bg-gray-200 rounded-md w-full"></div>
+        <div className="h-4 bg-gray-200 rounded-md w-full"></div>
+        <div className="h-4 bg-gray-200 rounded-md w-3/4"></div>
+        <div className="h-4 bg-gray-200 rounded-md w-full"></div>
+        <div className="h-4 bg-gray-200 rounded-md w-5/6"></div>
+      </div>
+    </article>
+  );
+}
+
 export default function PostPage() {
   const [postInfo,setPostInfo] = useState(null);
   const {userInfo} = useContext(UserContext);
   const {id} = useParams();
+  
   useEffect(() => {
     api.get(`/posts/${id}`)
       .then(response => {
         setPostInfo(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching post:', error);
+        setPostInfo({});
       });
   }, [id]);
 
-  if (!postInfo) return <div className="text-center py-20">
-    <div className="text-gray-500">Loading...</div>
-  </div>;
+  if (!postInfo) {
+    return <PostPageSkeleton />;
+  }
 
   return (
     <article className="max-w-none">
@@ -75,7 +103,6 @@ export default function PostPage() {
         dangerouslySetInnerHTML={{__html:postInfo.content}} 
       />
 
-      {/* Footer with social links */}
       <footer className="mt-16 pt-8 border-t border-gray-200">
         <div className="flex flex-col sm:flex-row justify-between items-center">
           <p className="text-gray-600 text-sm mb-4 sm:mb-0">

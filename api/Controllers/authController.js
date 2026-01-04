@@ -72,6 +72,10 @@ module.exports = {
     profile: (req, res) => {
         try {
             const { token } = req.cookies;
+            console.log('Profile request - Token exists:', !!token);
+            console.log('Profile request - Cookies:', Object.keys(req.cookies));
+            console.log('Profile request - Origin:', req.get('Origin'));
+            
             if (!token) return res.status(401).json({ message: "NOT LOGIN" });
     
             jwt.verify(token, secret, {}, (err, info) => {
@@ -79,6 +83,7 @@ module.exports = {
                     console.error("Token Verification Error:", err);
                     return res.status(401).json({ message: "Invalid token" });
                 }
+                console.log('Profile verified for user:', info.username);
                 res.json(info);
             });
         } catch (err) {

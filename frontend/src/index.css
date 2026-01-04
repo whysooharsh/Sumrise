@@ -62,7 +62,6 @@ code {
   text-decoration: underline;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
   .prose img {
     margin: 1.5rem auto;

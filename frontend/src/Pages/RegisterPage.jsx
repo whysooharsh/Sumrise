@@ -58,7 +58,7 @@ export default function RegisterPage() {
         <button 
           type="submit"
           disabled={isLoading}
-          className="w-full bg-black text-white py-2 rounded hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center"
+          className="w-full bg-[#0a0a0a] text-white py-2 rounded-md hover:bg-black disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center"
         >
           {isLoading ? (
             <>
@@ -98,7 +98,7 @@ export default function RegisterPage() {
 
             <button
               onClick={() => setShowErrorModal(false)}
-              className="mt-4 w-full px-4 py-2 text-sm font-medium text-white bg-gray-800 rounded-md hover:bg-gray-900"
+              className="mt-4 w-full px-4 py-2 text-sm font-medium text-white bg-[#0a0a0a] rounded-md hover:bg-black"
             >
               Try Again
             </button>

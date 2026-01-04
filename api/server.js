@@ -21,8 +21,7 @@ if (process.env.NODE_ENV === 'production') {
 const allowedOrigins = process.env.ALLOWED_ORIGINS 
   ? process.env.ALLOWED_ORIGINS.split(',') 
   : [
-      'https://sumrise-jet.vercel.app',
-      'https://www.sumrise-jet.vercel.app',
+      'https://surmise.vercel.app/',
       'http://localhost:5173',
       'http://localhost:3000'            
     ];
@@ -73,7 +72,12 @@ app.use('/api/auth', authRoutes);
 app.use('/api/posts', blogRoutes);
 
 app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
+  res.status(200).json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV,
+    corsOrigins: allowedOrigins
+  });
 });
 
 

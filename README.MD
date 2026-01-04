@@ -22,8 +22,8 @@ A modern, minimalist blog platform built with React and Node.js. Share your thou
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/harsSharma45/Sumrise.git
-   cd Sumrise
+   git clone https://github.com/harsSharma45/Surmise.git
+   cd Surmise
    ```
 
 2. **Install backend dependencies**
